@@ -1,5 +1,7 @@
 package boardgames;
 
+//This is a test
+
 public class Command {
 
 	private Coordinate coord1, coord2;
