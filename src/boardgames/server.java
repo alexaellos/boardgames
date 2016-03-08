@@ -44,8 +44,8 @@ public class server {
 
         playerX.setOpponent(playerO);
         playerO.setOpponent(playerX);
-        if(game.checkGamePreference(playerX.desiredGame,playerO.desiredGame) {
-          setGameBoard(playerX.desiredGame);
+        if(game.checkGamePreference(playerX.desiredGame,playerO.desiredGame)) {
+          game.setGameBoard(playerX.desiredGame);
         }
         else {
           break;
@@ -69,15 +69,13 @@ class Game {
 
   private GameBoard instance;
 
-  private Player currentPlayer;
-  private int gameSelectedByPlayerOne;
-  private int gameSelectedByPlayerTwo;
+  Player currentPlayer;
   //don't need board
   //don't need board will have hasWinner();
   //don't need boardfilledup
 
   public boolean checkGamePreference(int player1, int player2) {
-    if (player1.equals(player2)) {
+    if (player1==(player2)) {
       return true;
     }
     else {
@@ -85,22 +83,25 @@ class Game {
     }
   }
   public void setGameBoard(int player1) {
-    if (player1.equals(0)) {
+    if (player1==(0)) {
       instance = new TicTacToeGameBoard();
-    } else if (player1.equals(1)) {
+    } else if (player1==(1)) {
       instance = new OthelloGameBoard();
-    } else if (player1.equals(2)) {
-      instance = new CheckersGameBoard();
+    } else if (player1==(2)) {
+//      instance = new CheckersGameBoard();
     }
 
      
   }
 
-  public synchronized boolean legalMove(Coordinate c , Player player) {
-    if (commandIsValid(c)) {
-      Piece p = new Piece(c);
+  public synchronized boolean legalMove(Command c , Player player) {
 
-      instance.setPieceAt(c, p);
+   
+    if (instance.commandIsValid(c)) {
+      Coordinate c1 = c.getCoord1();
+      Coordinate c2 = c.getCoord2();
+      Piece p1 = new Piece(c1);
+      instance.setPieceAt(c2, p1);
       currentPlayer = currentPlayer.opponent;
       currentPlayer.otherPlayerMoved();
       return true;
@@ -117,7 +118,7 @@ class Game {
     private ObjectOutputStream output;
     private char mark;
     private Player opponent;
-    private int desiredGame;
+    int desiredGame;
     
      /**
      * Constructs a handler thread, squirreling away the socket.
@@ -140,7 +141,12 @@ class Game {
     }
 
     public void otherPlayerMoved() {
-        output.writeObject(instance);
+        try {
+			output.writeObject(instance);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void run(){
@@ -148,28 +154,27 @@ class Game {
     		
         //TODO: how do player know they have to go first??
 
-        while (true) {
-          Command comm = (Command)input.readObject();
+    		while (true) {
+    			Command comm = (Command)input.readObject();
 
-          if !(legalMove(comm, this) ) {
-            output.writeObject(instance);
-          }
+    			if (!legalMove(comm, this) ) {
+    				output.writeObject(instance);
+    			}
 
           
           //TODO: how will server know the players decided to quit?
-        }
-    	} catch (IOException e){
-        System.out.println(e);
-      } 
-      finally{
-        try {
-          socket.close();
+    		}
+    	} catch (IOException | ClassNotFoundException e){
+    		e.printStackTrace();
+    		
+    	} finally{
+    		try {
+    			socket.close();
 
-        } catch (IOException e) {
-          System.out.println("a WTF moment here.");
-        }
-      }
-
+    		} catch (IOException e) {
+    			System.out.println("a WTF moment here.");
+    		}
+    	}
     }
   }
 }
