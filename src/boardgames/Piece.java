@@ -40,5 +40,11 @@ public class Piece {
 	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
 	}
+	
+	public String toString() {
+		return playerId + ":" + id + "@" + coord;
+	}
+	
+	
 
 }
