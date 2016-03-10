@@ -1,6 +1,7 @@
 package boardgames;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class CheckersGameBoard implements GameBoard {
 
@@ -38,7 +39,7 @@ public class CheckersGameBoard implements GameBoard {
 				column.add(new Piece(new Coordinate(x, y)));
 			}
 			board.add(column);
-		}
+		}		
 		setUpPieces();
 	}
 	
@@ -47,13 +48,42 @@ public class CheckersGameBoard implements GameBoard {
 		for (int x = 0; x < BOARDSIZE; x++) {
 			for (int y = 0; y < BOARDSIZE; y++) {
 				if (x % 2 == y % 2) {
-					if (x < 3)
+					if (y < 3)
 						setPieceAt(new Coordinate(x, y), BLACK, BLACK);
-					if (x > 4)
+					if (y > 4)
 						setPieceAt(new Coordinate(x, y), RED, RED);
 				}
 			}
 		}
+	}
+	
+	private void drawBoard() {
+		for (int y = 0; y < BOARDSIZE; y++) {
+			if (y == 0) {
+				System.out.print("Y\\X");
+				for (int x = 0; x < BOARDSIZE; x++) {
+					System.out.print("{"+x+"}");
+				}
+				System.out.print("\n");
+			}
+			System.out.print("{"+y+"}");
+			for (int x = 0; x < BOARDSIZE; x++) {
+
+				if (getPieceAt(new Coordinate(x,y)).getId() == null) {
+					System.out.print("[ ]");
+				}
+				else if (getPieceAt(new Coordinate(x,y)).getId().equals(RED)) {
+					System.out.print("[R]");
+					//System.out.print("[" + getPieceAt(new Coordinate(x,y)).getId() + getPieceAt(new Coordinate(x,y)).getPlayerId() + "]");
+				}
+				else if (getPieceAt(new Coordinate(x,y)).getId().equals(BLACK)) {
+					System.out.print("[B]");
+					//System.out.print("[" + getPieceAt(new Coordinate(x,y)).getId() + getPieceAt(new Coordinate(x,y)).getPlayerId() + "]");
+				}					
+			}
+			System.out.print("\n");
+		}
+		
 	}
 
 	// Returns board
@@ -84,11 +114,11 @@ public class CheckersGameBoard implements GameBoard {
 	public boolean commandIsValid(Command c) {
 
 		if (currentPlayerId.equals(c.getPlayerId()) && getPieceAt(c.getCoord1()) != null && getPieceAt(c.getCoord1()).getPlayerId().equals(currentPlayerId)) {
-			
+
 			CheckersMove move = new CheckersMove(c.getCoord1(), c.getCoord2());
 			ArrayList<CheckersMove> legalMoves;
-			
-			if (continuousJumps.isEmpty())
+
+			if (continuousJumps == null || continuousJumps.isEmpty())
 				legalMoves = getLegalMoves();
 			else
 				legalMoves = continuousJumps;
@@ -191,23 +221,28 @@ public class CheckersGameBoard implements GameBoard {
 	 */
 	private ArrayList<CheckersMove> getLegalMoves() {		 
 		ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
-
+		
 		// Checks Jumps
 		for (int row = 0; row < BOARDSIZE; row++) {
 			for (int col = 0; col < BOARDSIZE; col++) {
 				if (getPieceAt(new Coordinate(row, col)).getPlayerId() == currentPlayerId) {
+										
+					if (canJump(new Coordinate(row, col), new Coordinate(row+2, col+2))) {
+						moves.add(new CheckersMove(row, col, row+2, col+2)); }
 					
-					if (canJump(new Coordinate(row, col), new Coordinate(row+2, col+2)))
-						moves.add(new CheckersMove(row, col, row+2, col+2));
-					if (canJump(new Coordinate(row, col), new Coordinate(row-2, col+2)))
-						moves.add(new CheckersMove(row, col, row-2, col+2));
-					if (canJump(new Coordinate(row, col), new Coordinate(row+2, col-2)))
-						moves.add(new CheckersMove(row, col, row+2, col-2));
-					if (canJump(new Coordinate(row, col), new Coordinate(row-2, col-2)))
-						moves.add(new CheckersMove(row, col, row-2, col-2));
+					if (canJump(new Coordinate(row, col), new Coordinate(row-2, col+2))) {
+						moves.add(new CheckersMove(row, col, row-2, col+2)); }
+					
+					if (canJump(new Coordinate(row, col), new Coordinate(row+2, col-2))) {
+						moves.add(new CheckersMove(row, col, row+2, col-2)); }
+					
+					if (canJump(new Coordinate(row, col), new Coordinate(row-2, col-2))) {
+						moves.add(new CheckersMove(row, col, row-2, col-2)); }
 				}
 			}
 		}
+				
+		
 		// If Jumps empty, checks moves
 		if (moves.size() == 0) {
 			for (int row = 0; row < BOARDSIZE; row++) {
@@ -226,7 +261,7 @@ public class CheckersGameBoard implements GameBoard {
 				}
 			}
 		}
-
+		
 		return moves;
 	}
 	
@@ -251,16 +286,28 @@ public class CheckersGameBoard implements GameBoard {
 	private boolean canJump (Coordinate from, Coordinate to) {
 		Coordinate jumped = getJumpCoordinates(from, to);
 		
+		//System.out.println(to.getX() + " " + to.getY());
+				
+		if (moveIsOffBoard(to))
+			return false;
+		else if (pieceIsAlreadyThere(to))
+			return false;
+		
 		Piece fromPiece = getPieceAt(from);
 		Piece jumpPiece = getPieceAt(jumped);
 		
-		if (moveIsOffBoard(to) || pieceIsAlreadyThere(to))
+		if (jumpPiece.getPlayerId() == null)
 			return false;
+		
 		if (currentPlayerId.equals(RED)) {
-			if (fromPiece.getId().equals(RED) && to.getY() < from.getY() && jumpPiece.getPlayerId().equals(BLACK))
+			
+			
+			if (fromPiece.getId().equals(RED) && to.getY() < from.getY() && getPieceAt(jumped).getPlayerId().equals(BLACK)) {
 				return true;
-			if (fromPiece.getId().equals(REDKING) && jumpPiece.getPlayerId().equals(BLACK))
+			}
+			if (fromPiece.getId().equals(REDKING) && jumpPiece.getPlayerId().equals(BLACK)) {
 				return true;
+			}
 		}
 		else {
 			if (fromPiece.getId().equals(BLACK) && to.getY() > from.getY() && jumpPiece.getPlayerId().equals(RED))
@@ -273,19 +320,21 @@ public class CheckersGameBoard implements GameBoard {
 	
 	// Called by getLegalMoves() to check if the coordinate sindicate a legal move.
 	private boolean canMove (Coordinate from, Coordinate to) {
-		if (moveIsOffBoard(to) || pieceIsAlreadyThere(to))
+		if (moveIsOffBoard(to))
+			return false;
+		else if (pieceIsAlreadyThere(to))
 			return false;
 		else if (currentPlayerId.equals(RED)) {
-			if (getPieceAt(from).getId().equals(RED) && to.getY() > from.getY()){
-				return false;
+			if (getPieceAt(from).getId().equals(RED) && to.getY() < from.getY()){
+				return true;
 			}
 		}
 		else {
-			if (getPieceAt(from).getId().equals(BLACK) && to.getY() < from.getY()){
-				return false;
+			if (getPieceAt(from).getId().equals(BLACK) && to.getY() > from.getY()){
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 
@@ -297,12 +346,13 @@ public class CheckersGameBoard implements GameBoard {
 	// Checks if checked move is out of bounds.
 	private boolean moveIsOffBoard (Coordinate to) {
 		if (to.getY() < 0 || to.getY() >= BOARDSIZE || to.getX() < 0 || to.getX() >= BOARDSIZE)
-			return false;
-		return true;
+			return true;
+		return false;
 	}
 	
 	// Checks if piece is currently in tile that is being checked.
 	private boolean pieceIsAlreadyThere (Coordinate to) {
+		
 		return getPieceAt(to).getId() != null;
 	}
 	
@@ -324,7 +374,7 @@ public class CheckersGameBoard implements GameBoard {
 	private Coordinate getJumpCoordinates(Coordinate from, Coordinate to) {
 		int x = (from.getX() + to.getX()) / 2;
 		int y = (from.getY() + to.getY()) / 2;
-		return new Coordinate(y, x);
+		return new Coordinate(x, y);
 	}
 	
 	
@@ -339,6 +389,10 @@ public class CheckersGameBoard implements GameBoard {
 	@Override
 	public void setCurrentPlayer (String s) {
 		currentPlayerId = s;
+	}
+	
+	public String getGameWinner() {
+		return gameWinner;
 	}
 	
 	
@@ -369,6 +423,59 @@ public class CheckersGameBoard implements GameBoard {
 		public Coordinate getTo() {
 			return to;
 		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof CheckersMove))
+				return false;
+			if (obj == this)
+				return true;
+			CheckersMove move = (CheckersMove) obj;
+			if (this.getFrom().getX() == move.getFrom().getX() && this.getFrom().getY() == move.getFrom().getY() && this.getTo().getX() == move.getTo().getX() && this.getTo().getY() == move.getTo().getY())
+				return true;
+			else
+				return false;
+				
+		}
 	}
+	
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
 
+		CheckersGameBoard checkers = new CheckersGameBoard();
+//		checkers.drawBoard();
+//		System.out.println(checkers.getPieceAt(new Coordinate(0,0)).getId());
+//		System.out.println(checkers.getPieceAt(new Coordinate(0,1)).getId());
+//		System.out.println(checkers.getPieceAt(new Coordinate(0,2)).getId());
+//		System.out.println(checkers.getPieceAt(new Coordinate(0,3)).getId());
+//		System.out.println(checkers.getPieceAt(new Coordinate(0,4)).getId());
+
+		
+		while(!checkers.gameIsOver) {
+			checkers.drawBoard();
+			System.out.println(checkers.getCurrentPlayer() + "'s Move");
+			System.out.println("Enter piece to move followed by place to move to: x y x y");
+			int fromx = in.nextInt();
+			int fromy = in.nextInt();
+			int tox = in.nextInt();
+			int toy = in.nextInt();
+			
+			Command c = new Command(checkers.getCurrentPlayer(), new Coordinate(fromx, fromy), new Coordinate(tox, toy));
+			boolean valid = checkers.commandIsValid(c);
+			while (!valid) {
+				System.out.println("Invalid move. Enter move as: x y x y");
+				fromx = in.nextInt();
+				fromy = in.nextInt();
+				tox = in.nextInt();
+				toy = in.nextInt();
+				
+				c = new Command(checkers.getCurrentPlayer(), new Coordinate(fromx, fromy), new Coordinate(tox, toy));
+				valid = checkers.commandIsValid(c);
+			}
+			checkers.executeCommand(c);
+		}
+		System.out.println("GAMEOVER! Winner is: " + checkers.getGameWinner());
+	}
+		
 }
+
