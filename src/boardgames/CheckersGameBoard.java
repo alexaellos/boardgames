@@ -62,7 +62,7 @@ public class CheckersGameBoard implements GameBoard {
 			if (y == 0) {
 				System.out.print("Y\\X");
 				for (int x = 0; x < BOARDSIZE; x++) {
-					System.out.print("{"+x+"}");
+					System.out.print("{"+x+" }");
 				}
 				System.out.print("\n");
 			}
@@ -70,15 +70,21 @@ public class CheckersGameBoard implements GameBoard {
 			for (int x = 0; x < BOARDSIZE; x++) {
 
 				if (getPieceAt(new Coordinate(x,y)).getId() == null) {
-					System.out.print("[ ]");
+					System.out.print("[  ]");
 				}
-				else if (getPieceAt(new Coordinate(x,y)).getId().equals(RED)) {
-					System.out.print("[R]");
-					//System.out.print("[" + getPieceAt(new Coordinate(x,y)).getId() + getPieceAt(new Coordinate(x,y)).getPlayerId() + "]");
+				else if (getPieceAt(new Coordinate(x,y)).getPlayerId().equals(RED)) {
+					System.out.print("[R");
+					if (getPieceAt(new Coordinate(x,y)).getId().equals(RED))
+						System.out.print("R]");
+					else if (getPieceAt(new Coordinate(x,y)).getId().equals(REDKING))
+						System.out.print("K]");
 				}
-				else if (getPieceAt(new Coordinate(x,y)).getId().equals(BLACK)) {
-					System.out.print("[B]");
-					//System.out.print("[" + getPieceAt(new Coordinate(x,y)).getId() + getPieceAt(new Coordinate(x,y)).getPlayerId() + "]");
+				else if (getPieceAt(new Coordinate(x,y)).getPlayerId().equals(BLACK)) {
+					System.out.print("[B");
+					if (getPieceAt(new Coordinate(x,y)).getId().equals(BLACK))
+						System.out.print("B]");
+					else if (getPieceAt(new Coordinate(x,y)).getId().equals(BLACKKING))
+						System.out.print("K]");
 				}					
 			}
 			System.out.print("\n");
@@ -113,7 +119,7 @@ public class CheckersGameBoard implements GameBoard {
 	@Override
 	public boolean commandIsValid(Command c) {
 
-		if (currentPlayerId.equals(c.getPlayerId()) && getPieceAt(c.getCoord1()) != null && getPieceAt(c.getCoord1()).getPlayerId().equals(currentPlayerId)) {
+		if (currentPlayerId.equals(c.getPlayerId()) && getPieceAt(c.getCoord1()).getPlayerId() != null && getPieceAt(c.getCoord1()).getPlayerId().equals(currentPlayerId)) {
 
 			CheckersMove move = new CheckersMove(c.getCoord1(), c.getCoord2());
 			ArrayList<CheckersMove> legalMoves;
@@ -270,14 +276,14 @@ public class CheckersGameBoard implements GameBoard {
 	private ArrayList<CheckersMove> getLegalJumpsFrom (Coordinate from) {
 		ArrayList<CheckersMove> jumps = new ArrayList<CheckersMove>();
 		
-		if (canJump(from, new Coordinate(from.getY()+2, from.getX()+2)))
-			jumps.add(new CheckersMove(from, new Coordinate(from.getY()+2, from.getX()+2)));
-		if (canJump(from, new Coordinate(from.getY()-2, from.getX()+2)))
-			jumps.add(new CheckersMove(from, new Coordinate(from.getY()+2, from.getX()+2)));
-		if (canJump(from, new Coordinate(from.getY()+2, from.getX()-2)))
-			jumps.add(new CheckersMove(from, new Coordinate(from.getY()+2, from.getX()+2)));
-		if (canJump(from, new Coordinate(from.getY()-2, from.getX()-2)))
-			jumps.add(new CheckersMove(from, new Coordinate(from.getY()+2, from.getX()+2)));
+		if (canJump(from, new Coordinate(from.getX()+2, from.getY()+2)))
+			jumps.add(new CheckersMove(from, new Coordinate(from.getX()+2, from.getY()+2)));
+		if (canJump(from, new Coordinate(from.getX()-2, from.getY()+2)))
+			jumps.add(new CheckersMove(from, new Coordinate(from.getX()+2, from.getY()+2)));
+		if (canJump(from, new Coordinate(from.getX()+2, from.getY()-2)))
+			jumps.add(new CheckersMove(from, new Coordinate(from.getX()+2, from.getY()+2)));
+		if (canJump(from, new Coordinate(from.getX()-2, from.getY()-2)))
+			jumps.add(new CheckersMove(from, new Coordinate(from.getX()+2, from.getY()+2)));
 
 		return jumps;
 	}
