@@ -2,31 +2,42 @@ package boardgames;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-public class GUI implements ActionListener{
+public class GUI implements ActionListener, GUIUpdater{
 
 	private int FRAME_WIDTH = 720;
 	private int FRAME_HEIGHT = 720;
-	
+
 	private JFrame startFrame;
 	private JFrame gameMenuFrame;
 	private JFrame loadFrame;
 	private JFrame mainFrame;
-
+	
+	private JFrame boardGameFrame;
+	private JPanel boardGamePanel;
+	
 	private JPanel panel;
+	
+	private JLabel currentPlayer;
 	private JButton pressedButton;
-	
+
 	private boolean isPlayer1Turn;
-	
+
 	private Color boardColor1;
 	private Color boardColor2;
-	
+
 	private ImageIcon player1Icon;
 	private ImageIcon player2Icon;
 
+	private JButton[][] boardGrid;
+
+	private String player1Id;
+	private String player2Id;
 
 	public GUI()
 	{
@@ -142,7 +153,7 @@ public class GUI implements ActionListener{
 	private void loadWaitingFrame()
 	{
 		gameMenuFrame.setVisible(false);
-		
+
 		loadFrame = createNewFrame("Loading Screen", 400, 200);
 		panel = new JPanel(new GridBagLayout());
 
@@ -178,20 +189,19 @@ public class GUI implements ActionListener{
 	private JFrame loadBoardGameFrame(String gameTitle, int gridWidth, int gridHeight){
 		// Initialize player 1's turn
 		isPlayer1Turn = true;
-		
+
 		// Create a new frame
-		JFrame frame = createNewFrame(gameTitle, FRAME_WIDTH, FRAME_HEIGHT);
+		boardGameFrame = createNewFrame(gameTitle, FRAME_WIDTH, FRAME_HEIGHT);
 
 		// Create a new JPanel
 		JPanel panel = new JPanel(new GridLayout(gridWidth, gridHeight));
-		//panel.setLayout(new GridLayout(gridWidth, gridHeight));
 
 		// Add the JPanel to the frame's content pane
-		Container container = frame.getContentPane();
+		Container container = boardGameFrame.getContentPane();
 		container.add(panel, BorderLayout.CENTER);
 
 		// Initialize a grid of buttons for the board game
-		JButton[][] boardGrid = new JButton[gridWidth][gridHeight];
+		boardGrid = new JButton[gridWidth][gridHeight];
 
 		// Add JButton objects to the grid of buttons
 		for (int i = 0; i < gridWidth; i++){
@@ -199,7 +209,7 @@ public class GUI implements ActionListener{
 				JButton gridButton = new JButton();
 				gridButton.addActionListener(this);
 				gridButton.setActionCommand("" + i + "," + j + "," + "0");
-				
+
 				// Figure out which color to set as the background of each button
 				// in the grid of buttons.
 				if((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1)){
@@ -211,18 +221,18 @@ public class GUI implements ActionListener{
 					gridButton.setForeground(boardColor2);
 				}
 				gridButton.setOpaque(true);
-				
+
 				// Add a border around the buttons
 				Border buttonBorder = new LineBorder(Color.BLACK, 1);
 				gridButton.setBorder(buttonBorder);
-				
+
 				boardGrid[i][j] = gridButton;
 				panel.add(boardGrid[i][j]);
 			}
 		}
-		return frame;
+		return boardGameFrame;
 	}
-	
+
 	private JFrame createNewFrame(String title, int width, int height){
 		JFrame frame = new JFrame(title);
 		frame.setSize(width, height);
@@ -231,26 +241,49 @@ public class GUI implements ActionListener{
 		frame.setResizable(false);
 		return frame;
 	}
-	
+
 	private void setBoardColors(Color color1, Color color2){
 		boardColor1 = color1;
 		boardColor2 = color2;
 	}
-	
+
 	private void loadPlayerIcons(String player1IconImgLocation, String player2IconImgLocation){
 		player1Icon = new ImageIcon(getClass().getResource(player1IconImgLocation));
 		player2Icon = new ImageIcon(getClass().getResource(player2IconImgLocation));
 	}
-	
-	// TODO
-	public void updateGameBoardGUI(boolean isPlayer1Turn, JButton[][] buttonGrid){
-		
+
+	public void updateGameBoardGUI(String playerName, ArrayList<ArrayList<Piece>> board){
+		currentPlayer = new JLabel("Currently " + playerName + "'s Turn");
+
+		Container container = boardGameFrame.getContentPane();
+		container.remove(boardGamePanel);
+
+		for(int i = 0; i < board.size(); i++){
+			for(int j = 0; j < board.get(i).size(); j++){
+				Piece currentPiece = board.get(i).get(j);
+				JButton gridButton = boardGrid[i][j];
+
+				String player = currentPiece.getPlayerId();
+				String actionCommandStr = "" + i + "," + j + ",";
+
+				if(player.equals(player1Id)){
+					actionCommandStr += "1";
+				}
+				else if(player.equals(player2Id)){
+					actionCommandStr += "2";
+				}
+				gridButton.setActionCommand(actionCommandStr);
+				boardGrid[i][j] = gridButton;
+				boardGamePanel.add(boardGrid[i][j]);
+			}
+		}
+		container.add(boardGamePanel, BorderLayout.CENTER);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		pressedButton = (JButton) e.getSource();
-		
+
 		// TIC TAC TOE GUI LOGIC
 		if (pressedButton.getIcon() == null && isPlayer1Turn){
 			pressedButton.setIcon(player1Icon);
@@ -260,5 +293,35 @@ public class GUI implements ActionListener{
 			pressedButton.setIcon(player2Icon);
 			isPlayer1Turn = true;
 		}
+	}
+
+	@Override
+	public String getGUIChange() {
+		return "";
+	}
+
+	@Override
+	public String loadGameBoardGUI(GameBoard game) {
+		
+	/* GameBoard class needs to store the following:
+	 * - Tile background 1 color
+	 * - Tile background 2 color
+	 * - Player 1 icon
+	 * - Player 2 icon
+	 * - Game title
+	 * - Game board width
+	 * - Game board height
+	 * */
+		setBoardColors(game.getBoardColor1(), game.getBoardColor2());
+		loadPlayerIcons(game.getPlayer1Icon(), game.getPlayer2Icon());
+		JFrame boardGame = loadBoardGameFrame(game.getTitle(), game.getBoardWidth(), game.getBoardHeight());
+		boardGame.setVisible(true);
+		return "";
+	}
+
+	@Override
+	public String startGUI() {
+		loadStartFrame();
+		return "";
 	}
 }
