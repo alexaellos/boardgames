@@ -8,9 +8,11 @@ public class OthelloGameBoard implements GameBoard {
 	static final String player1 = "whte";
 	static final String player2 = "blck";
 	static final int boardSize = 8;
+	
 
 	private String currentPlayerId; /* Whose turn it is */
 	//private ArrayList<ArrayList<Piece>> board;
+	private boolean gameOver;
 	private Piece[][] board;
 	private ArrayList<Coordinate> flipQueue; 	/* overwritten whenever
 												 * piecesToFlip is called */
@@ -48,6 +50,7 @@ public class OthelloGameBoard implements GameBoard {
 			board[x] = tmp;
 		}
 		setCurrentPlayer(player1);
+		setGameOver(false);
 		
 		getPieceAt(new Coordinate(3, 3)).setId(player1);
 		getPieceAt(new Coordinate(4, 4)).setId(player1);
@@ -230,6 +233,14 @@ public class OthelloGameBoard implements GameBoard {
 
 
 		
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 
 }
