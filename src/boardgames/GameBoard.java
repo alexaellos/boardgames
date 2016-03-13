@@ -1,10 +1,12 @@
 package boardgames;
 
-public interface GameBoard {
-
-	/* private ArrayList<ArrayList<Piece>> board; */
-	
+public interface GameBoard {	
 	public boolean commandIsValid (Command c);
+	public Piece getPieceAt(Coordinate c);
+	public void setPieceAt(Coordinate c, Piece p);
 	public String getCurrentPlayer();
-	public gameStatus getGameStatus();
+	public void setCurrentPlayer(String s);
+	public Piece[][] getBoard();
+	public int getBoardHeight();
+	public int getBoardWidth();
 }
