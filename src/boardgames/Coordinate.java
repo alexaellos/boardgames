@@ -34,5 +34,17 @@ public class Coordinate {
 		return "(" + getX() + ", " + getY() + ")";
 	}
 	
-
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Coordinate))
+			return false;
+		if (obj == this)
+			return true;
+		Coordinate c = (Coordinate) obj;
+		if (this.getX() == c.getX() && this.getY() == c.getY())
+			return true;
+		else
+			return false;
+			
+	}
 }

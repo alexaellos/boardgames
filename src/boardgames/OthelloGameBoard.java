@@ -278,4 +278,10 @@ public class OthelloGameBoard implements GameBoard {
 
 	}
 
+	@Override
+	public GameBoardGUI getGameBoardGUI() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
