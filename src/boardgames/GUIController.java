@@ -21,3 +21,10 @@ public class GUIController {
  * - Make sure GUI works with the client (and the server)
  * 
  * */
+
+/* Changes List:
+ * - startGUI() will return a gameStatus.gameSelected enum
+ * -- occurs after the player enters their name and selects a game
+ *
+ * 
+ */

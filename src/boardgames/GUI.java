@@ -316,7 +316,6 @@ public class GUI implements ActionListener, GUIUpdater{
 	 * - Game board height
 	 * */
 		setBoardColors(game.getBoardColor1(), game.getBoardColor2());
-		loadPlayerIcons(game.getPlayer1Icon(), game.getPlayer2Icon());
 		JFrame boardGame = loadBoardGameFrame(game.getTitle(), game.getBoardWidth(), game.getBoardHeight());
 		boardGame.setVisible(true);
 		return "";
@@ -330,9 +329,16 @@ public class GUI implements ActionListener, GUIUpdater{
 	}
 
 	@Override
-	public String startGUI(ArrayList<String> gameList) {
+	public gameStatus startGUI(ArrayList<String> gameList) {
 		//loadStartFrame();
-		return "";
+		String loadingYet = "";
+		while(!loadingYet.equals("done")){
+			// do something
+			
+			if(loadingYet.equals("done")){
+				break;
+			}
+		}
+		return gameStatus.gameSelected;
 	}
-
 }
