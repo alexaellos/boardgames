@@ -324,4 +324,10 @@ public class GUI implements ActionListener, GUIUpdater{
 		loadStartFrame();
 		return "";
 	}
+
+	@Override
+	public String startGUI(ArrayList<GameBoard> gameList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
