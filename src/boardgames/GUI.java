@@ -316,23 +316,38 @@ public class GUI implements ActionListener, GUIUpdater{
 	 * - Game board height
 	 * */
 		setBoardColors(game.getBoardColor1(), game.getBoardColor2());
-		loadPlayerIcons(game.getPlayer1Icon(), game.getPlayer2Icon());
 		JFrame boardGame = loadBoardGameFrame(game.getTitle(), game.getBoardWidth(), game.getBoardHeight());
 		boardGame.setVisible(true);
 		return "";
 	}
-	
-	@Override
-	public String loadWaitingGUI()
-	{
-		loadWaitingFrame();
-		return "";
-	}
 
 	@Override
-	public String startGUI(ArrayList<String> gameList) {
+	public gameStatus startGUI(ArrayList<String> gameList) {
 		//loadStartFrame();
+		String loadingYet = "";
+		while(!loadingYet.equals("done")){
+			// do something
+			
+			if(loadingYet.equals("done")){
+				break;
+			}
+		}
+		return gameStatus.gameSelected;
+	}
+
+	@Override
+	public String getSelectedGameTitle() {
 		return "";
 	}
 
+	@Override
+	public String getPlayerName() {
+		return "";
+	}
+
+	@Override
+	public gameStatus restartGameMenuGUI() {
+		// TODO Auto-generated method stub
+		return gameStatus.gameSelected;
+	}
 }

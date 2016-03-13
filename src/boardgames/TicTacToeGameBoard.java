@@ -43,7 +43,7 @@ public class TicTacToeGameBoard implements GameBoard{
 		ticTacToeGUI = new GameBoardGUI("Tic Tac Toe", ROWS, COLS);
 	    for (int row = 0; row < ROWS; ++row) {
 	       for (int col = 0; col < COLS; ++col) {
-	          board[row][col] = new Piece(new Coordinate(row, col), "", null);
+	          board[row][col] = new Piece(new Coordinate(row, col), "", null, "");
 	       }
 	    }
 	    gameStatus = boardgames.gameStatus.inProgress;
@@ -70,6 +70,7 @@ public class TicTacToeGameBoard implements GameBoard{
             currentRow = c.getCoord1().getX();
             currentCol = c.getCoord1().getY();
             board[currentRow][currentCol].setId(c.getPlayerId());
+            board[currentRow][currentCol].setImageLocation((currentPlayer == "X") ? "assets/X.GIF" : "assets/Y.GIF"); 
             return true;
          } else {
         	 System.out.println("Invalid Move!");

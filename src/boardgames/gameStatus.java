@@ -5,5 +5,6 @@ public enum gameStatus {
 	winnerPlayer1,
 	winnerPlayer2,
 	tieGame,
-	gameOver
+	gameOver,
+	gameSelected
 }
