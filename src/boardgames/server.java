@@ -34,10 +34,12 @@ public class server {
 	}
 
 	public static void main(String[] args) throws Exception {
-  	ServerSocket listener = new ServerSocket(PORT);
+		 ServerSocket listener = null ;
     System.out.println("Server is running");
     try {
     	while (true) {
+        listener = new ServerSocket(PORT);
+
         Game game = new Game();
         Game.Player playerX = game.new Player(listener.accept(), 'X');
         Game.Player playerO = game.new Player(listener.accept(), 'O');
@@ -48,7 +50,10 @@ public class server {
           game.setGameBoard(playerX.desiredGame);
         }
         else {
-          break;
+          playerX.toDisappoint();
+          playerO.toDisappoint();
+          listener.close();
+          continue;
         }
         game.currentPlayer = playerX;
 
@@ -130,31 +135,52 @@ class Game {
       try {
         input = new ObjectInputStream(socket.getInputStream());
         output = new ObjectOutputStream(socket.getOutputStream());
-        desiredGame = input.readInt();
+        getDesiredGame();
+
       } catch (IOException e) {
         System.out.println("Player could not connect or he died");
       }
     } 
+
+    public void getDesiredGame() {
+    	try {
+        desiredGame = input.readInt();
+      } catch (IOException e) {
+    		// TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+
+    public void toDisappoint() {
+      try {
+        output.writeChars("Nobody wants to play with you. You will be disconnected.");
+      } catch (IOException e) {
+		// TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+    }
 
     public void setOpponent(Player opponent) {
       this.opponent = opponent;
     }
 
     public void otherPlayerMoved() {
-        try {
+      try {
 			output.writeObject(instance);
-		} catch (IOException e) {
+		  } catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			 e.printStackTrace();
+		  }
     }
     
-    public void run(){
+    public void run(){ //plays the game after being matched
     	try{
     		
         //TODO: how do player know they have to go first??
 
     		while (true) {
+
     			Command comm = (Command)input.readObject();
 
     			if (!legalMove(comm, this) ) {
