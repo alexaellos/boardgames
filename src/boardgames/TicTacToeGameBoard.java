@@ -8,16 +8,13 @@ public class TicTacToeGameBoard implements GameBoard{
 	public static final int CROSS = 1;
 	public static final int CIRCLE = 2;
 	public static final int ROWS = 3, COLS = 3;
-	 
-
-	public static final int PLAYING = 0;
-	public static final int DRAW = 1;
-	public static final int CROSS_WON = 2;
-	public static final int CIRCLE_WON = 3;
+	
+	public static boolean gameOver;
 	public static String currentPlayer;
 	public static int currentRow, currentCol;
 	public static int currentState;
 	public static Command command;
+	public static gameStatus gameStatus;
 	
 	public static Piece[][] board = new Piece[ROWS][COLS];
 	public static Scanner in = new Scanner(System.in);
@@ -30,17 +27,17 @@ public class TicTacToeGameBoard implements GameBoard{
 	      initGame();
 	      do {
 	         makeMove(currentPlayer);
-	         updateState(currentPlayer, currentRow, currentCol);
+	         updateStatus(currentPlayer, currentRow, currentCol);
 	         printBoard();
-	         if (currentState == CROSS_WON) {
+	         if (gameStatus == boardgames.gameStatus.winnerPlayer1) {
 	            System.out.println("'X' wins!");
-	         } else if (currentState == CIRCLE_WON) {
+	         } else if (gameStatus == boardgames.gameStatus.winnerPlayer2) {
 	            System.out.println("'O' wins!");
-	         } else if (currentState == DRAW) {
+	         } else if (gameStatus == boardgames.gameStatus.tieGame) {
 	            System.out.println("It's a Draw!");
 	         }
 	         currentPlayer = (currentPlayer == "X") ? "O" : "X";
-	      } while (currentState == PLAYING);
+	      } while (gameStatus == boardgames.gameStatus.inProgress);
 	}
 	
 	public static void initGame() {
@@ -49,7 +46,7 @@ public class TicTacToeGameBoard implements GameBoard{
 	            board[row][col] = new Piece(new Coordinate(row, col), "", null);
 	         }
 	      }
-	      currentState = PLAYING;
+	      gameStatus = boardgames.gameStatus.inProgress;
 	      currentPlayer = "X";
 	   }
 	
@@ -80,17 +77,11 @@ public class TicTacToeGameBoard implements GameBoard{
          }
 	}
 	
-	@Override
-	public boolean commandIsValid(Command c) {
-		return (commandValid(c)) ? true : false;
-		
-	}
-	
-	public static void updateState(String currentTurn, int currentRow, int currentCol) {
+	public static void updateStatus(String currentTurn, int currentRow, int currentCol) {
 	      if (hasWon(currentTurn, currentRow, currentCol)) {
-	         currentState = (currentTurn == "X") ? CROSS_WON : CIRCLE_WON;
+	         gameStatus = (currentTurn == "X") ? boardgames.gameStatus.winnerPlayer1 : boardgames.gameStatus.winnerPlayer2;
 	      } else if (isDraw()) {
-	         currentState = DRAW;
+	    	  gameStatus = boardgames.gameStatus.tieGame;
 	      }
 	   }
 	
@@ -148,34 +139,18 @@ public class TicTacToeGameBoard implements GameBoard{
 	}
 
 	@Override
-	public Piece getPieceAt(Coordinate c) {
-		return board[c.getX()][c.getY()];
-	}
-	
-	@Override
-	public void setPieceAt(Coordinate c, Piece p) {
-		getPieceAt(c).setCoord(p.getCoord());
-		getPieceAt(c).setId(p.getId());
-		getPieceAt(c).setPlayerId(p.getPlayerId());
-	}
-
-	@Override
 	public String getCurrentPlayer() {
 		return currentPlayer;
 	}
-
-	public void setCurrentPlayer(String s) {
-		currentPlayer = s;
-
-	}
 	
 	@Override
-	public boolean isGameOver(){
-		return true;
-	}
-	
-	@Override
-	public void setGameOver(boolean gameOver){
+	public boolean commandIsValid(Command c) {
+		return (commandValid(c)) ? true : false;
 		
+	}
+	
+	@Override
+	public gameStatus getGameStatus(){
+		return gameStatus;
 	}
 }
