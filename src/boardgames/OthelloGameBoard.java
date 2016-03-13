@@ -12,7 +12,7 @@ public class OthelloGameBoard implements GameBoard {
 
 	private String currentPlayerId; /* Whose turn it is */
 	//private ArrayList<ArrayList<Piece>> board;
-	private boolean gameOver;
+	private gameStatus gameStatus;
 	private Piece[][] board;
 	private ArrayList<Coordinate> flipQueue; 	/* overwritten whenever
 												 * piecesToFlip is called */
@@ -50,7 +50,7 @@ public class OthelloGameBoard implements GameBoard {
 			board[x] = tmp;
 		}
 		setCurrentPlayer(player1);
-		setGameOver(false);
+		setGameStatus(boardgames.gameStatus.inProgress);
 		
 		getPieceAt(new Coordinate(3, 3)).setId(player1);
 		getPieceAt(new Coordinate(4, 4)).setId(player1);
@@ -156,7 +156,7 @@ public class OthelloGameBoard implements GameBoard {
 				}
 			}
 		}
-		setGameOver(false); /* No possible moves for either party. Game is over. */
+		setGameStatus(boardgames.gameStatus.gameOver); /* No possible moves for either party. Game is over. */
 	}
 	
 	public void makeMove(Command c) {
@@ -176,13 +176,11 @@ public class OthelloGameBoard implements GameBoard {
 	}
 	
 	
-	@Override
 	public Piece getPieceAt(Coordinate c) {
 		return board[c.getX()][c.getY()];
 		/* return boardc.getX()).get(c.getY()); */
 	}
 
-	@Override
 	public void setPieceAt(Coordinate c, Piece p) {
 		getPieceAt(c).setCoord(p.getCoord());
 		getPieceAt(c).setId(p.getId());
@@ -194,7 +192,6 @@ public class OthelloGameBoard implements GameBoard {
 		return currentPlayerId;
 	}
 
-	@Override
 	public void setCurrentPlayer(String s) {
 		currentPlayerId = s;
 	}
@@ -255,12 +252,13 @@ public class OthelloGameBoard implements GameBoard {
 		
 	}
 
-	public boolean isGameOver() {
-		return gameOver;
+	public gameStatus getGameStatus() {
+		return gameStatus;
 	}
 
-	public void setGameOver(boolean gameOver) {
-		this.gameOver = gameOver;
+	public void setGameStatus(gameStatus gameStatus) {
+		this.gameStatus = gameStatus;
 	}
+
 
 }

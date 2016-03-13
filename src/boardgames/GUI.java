@@ -301,7 +301,7 @@ public class GUI implements ActionListener, GUIUpdater{
 	}
 
 	@Override
-	public String loadGameBoardGUI(GameStateGUI game) {
+	public String loadGameBoardGUI(GameBoardGUI game) {
 		
 	/* Game[Board]GUI class needs to store the following:
 	 * - Tile background 1 color

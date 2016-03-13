@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
-public class GameStateGUI {
+public class GameBoardGUI {
 
 	private String gameTitle;
 
@@ -17,7 +17,7 @@ public class GameStateGUI {
 	private ImageIcon player1Icon;
 	private ImageIcon player2Icon;
 
-	public GameStateGUI(String gameTitle, int gameBoardWidth, int gameBoardHeight)
+	public GameBoardGUI(String gameTitle, int gameBoardWidth, int gameBoardHeight)
 	{
 		this.gameTitle = gameTitle;
 		this.gameBoardWidth = gameBoardWidth;
