@@ -11,4 +11,5 @@ public interface GameBoard {
 	public void setCurrentPlayer(String s);
 	public boolean isGameOver();
 	public void setGameOver(boolean gameOver);
+	public GameBoardGUI getGameBoardGUI();
 }
