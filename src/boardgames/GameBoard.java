@@ -7,4 +7,5 @@ public interface GameBoard {
 	public boolean commandIsValid (Command c);
 	public String getCurrentPlayer();
 	public gameStatus getGameStatus();
+	public GameBoardGUI getGameBoardGUI();
 }
