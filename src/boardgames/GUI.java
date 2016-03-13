@@ -38,6 +38,8 @@ public class GUI implements ActionListener, GUIUpdater{
 
 	private String player1Id;
 	private String player2Id;
+	
+	public String username;
 
 	public GUI()
 	{
@@ -57,6 +59,7 @@ public class GUI implements ActionListener, GUIUpdater{
 
 		JLabel labelUsername = new JLabel("Enter username: ");
 		JTextField textUsername = new JTextField(20);
+		username = textUsername.getText();
 		JButton connect = new JButton("Connect");
 
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -252,15 +255,15 @@ public class GUI implements ActionListener, GUIUpdater{
 		player2Icon = imageIcon2;
 	}
 
-	public void updateGameBoardGUI(String playerName, ArrayList<ArrayList<Piece>> board){
+	public void updateGameBoardGUI(String playerName, Piece[][] board){
 		currentPlayer = new JLabel("Currently " + playerName + "'s Turn");
 
 		Container container = boardGameFrame.getContentPane();
 		container.remove(boardGamePanel);
 
-		for(int i = 0; i < board.size(); i++){
-			for(int j = 0; j < board.get(i).size(); j++){
-				Piece currentPiece = board.get(i).get(j);
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[i].length; j++){
+				Piece currentPiece = board[i][j];
 				JButton gridButton = boardGrid[i][j];
 
 				String player = currentPiece.getPlayerId();
@@ -318,10 +321,17 @@ public class GUI implements ActionListener, GUIUpdater{
 		boardGame.setVisible(true);
 		return "";
 	}
+	
+	@Override
+	public String loadWaitingGUI()
+	{
+		loadWaitingFrame();
+		return "";
+	}
 
 	@Override
 	public String startGUI(ArrayList<String> gameList) {
-		loadStartFrame();
+		//loadStartFrame();
 		return "";
 	}
 
