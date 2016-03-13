@@ -101,7 +101,6 @@ public class CheckersGameBoard implements GameBoard {
 	private void initializeGUI() {
 		checkersGUI = new GameBoardGUI("Checkers", BOARDSIZE, BOARDSIZE);
 		checkersGUI.setGameBoardColors(Color.RED, Color.BLACK);
-		checkersGUI.setPlayerIcons("assets/RED.GIF", "assets/BLACK.GIF");
 	}
 	
 	@Override
