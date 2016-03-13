@@ -35,19 +35,38 @@ public class OthelloGameBoard implements GameBoard {
 		getPieceAt(new Coordinate(4, 4)).setId(player1);
 		getPieceAt(new Coordinate(3, 3)).setPlayerId(player1);
 		getPieceAt(new Coordinate(4, 4)).setPlayerId(player1);
+		
 
 		getPieceAt(new Coordinate(4, 3)).setId(player2);
 		getPieceAt(new Coordinate(3, 4)).setId(player2);
 		getPieceAt(new Coordinate(4, 3)).setPlayerId(player2);
 		getPieceAt(new Coordinate(3, 4)).setPlayerId(player2);
 		
+		updatePieceFilename(getPieceAt(new Coordinate(3, 3)));
+		updatePieceFilename(getPieceAt(new Coordinate(4, 4)));
+		updatePieceFilename(getPieceAt(new Coordinate(3, 4)));
+		updatePieceFilename(getPieceAt(new Coordinate(4, 3)));
+		
+		
 		if (guiAssets == null) {
 			guiAssets = new GameBoardGUI("Othello", boardSize, boardSize);
 			guiAssets.setGameBoardColors(Color.decode("#008000"), Color.decode("#008000"));
-			guiAssets.setPlayerIcons("othello_white.png", "othello_black.png");
 		}
 		
 		
+	}
+	
+	
+	private void updatePieceFilename(Piece p) {
+		if (player1.equals(p.getId())) {
+			p.setImageLocation("assets/othello_white.png");
+		}
+		else if (player1.equals(p.getId())) {
+			p.setImageLocation("assets/othello_black.png");
+		}
+		else {
+			p.setImageLocation("");
+		}
 	}
 
 	public Piece[][] getBoard() {
@@ -164,9 +183,11 @@ public class OthelloGameBoard implements GameBoard {
 			System.out.println("Flipping " + getPieceAt(x) + " to " + currentPlayerId);
 			getPieceAt(x).setId(currentPlayerId);
 			getPieceAt(x).setPlayerId(currentPlayerId);
+			updatePieceFilename(getPieceAt(x));
 		}
 		getPieceAt(c.getCoord1()).setId(currentPlayerId);
 		getPieceAt(c.getCoord1()).setPlayerId(currentPlayerId);
+		updatePieceFilename(getPieceAt(c.getCoord1()));
 		/* convertPieces(flipQueue, currentPlayerId); */
 		setCurrentPlayer(opposite(getCurrentPlayer()));
 		checkGameState();
@@ -181,6 +202,7 @@ public class OthelloGameBoard implements GameBoard {
 		getPieceAt(c).setCoord(p.getCoord());
 		getPieceAt(c).setId(p.getId());
 		getPieceAt(c).setPlayerId(p.getPlayerId());
+		updatePieceFilename(getPieceAt(c));
 	}
 
 	@Override
