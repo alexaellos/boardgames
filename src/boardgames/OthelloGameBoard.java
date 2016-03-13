@@ -139,6 +139,26 @@ public class OthelloGameBoard implements GameBoard {
 	}
 	
 	
+	private void checkGameState() {
+		/* Checks for gameOver or no-move-allowed conditions and handles them appropriately */
+		for (int x = 0; x < boardSize; x++) {
+			for (int y = 0; y < boardSize; y++) {
+				if (commandIsValid(new Command(new Coordinate(x, y)))) {
+					return; /* At least one possible command; we're good */
+				}
+			}
+		}
+		setCurrentPlayer(opposite(getCurrentPlayer())); /* Player loses his/her turn */
+		for (int x = 0; x < boardSize; x++) {
+			for (int y = 0; y < boardSize; y++) {
+				if (commandIsValid(new Command(new Coordinate(x, y)))) {
+					return; /* At least one possible command for other player; we're good */
+				}
+			}
+		}
+		setGameOver(false); /* No possible moves for either party. Game is over. */
+	}
+	
 	public void makeMove(Command c) {
 		/* GIVEN:
 		 * Command `c` is already valid and is ready to be made
