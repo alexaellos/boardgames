@@ -2,8 +2,6 @@ package boardgames;
 
 import java.awt.Color;
 
-import javax.swing.ImageIcon;
-
 public class GameBoardGUI {
 
 	private String gameTitle;

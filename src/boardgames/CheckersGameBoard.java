@@ -50,9 +50,9 @@ public class CheckersGameBoard implements GameBoard {
 			for (int y = 0; y < BOARDSIZE; y++) {
 				if (x % 2 == y % 2) {
 					if (y < 3)
-						setPieceAt(new Coordinate(x, y), BLACK, BLACK);
+						setPieceAt(new Coordinate(x, y), BLACK, BLACK, "assets/BLACK.GIF");
 					if (y > 4)
-						setPieceAt(new Coordinate(x, y), RED, RED);
+						setPieceAt(new Coordinate(x, y), RED, RED, "assets/RED.GIF");
 				}
 			}
 		}
@@ -208,13 +208,15 @@ public class CheckersGameBoard implements GameBoard {
 	public void setPieceAt(Coordinate c, Piece p) {
 		getPieceAt(c).setId(p.getId());
 		getPieceAt(c).setPlayerId(p.getPlayerId());
+		getPieceAt(c).setImageLocation(p.getImageLocation());
 	}
 	
 	// Sets piece at coordinate c to id and playerId.
 	// Used primarily when initializing board.
-	private void setPieceAt(Coordinate c, String id, String playerId) {
+	private void setPieceAt(Coordinate c, String id, String playerId, String imageLocation) {
 		getPieceAt(c).setId(id);
 		getPieceAt(c).setPlayerId(playerId);
+		getPieceAt(c).setImageLocation(imageLocation);
 	}
 	
 	// Sets piece at coordinate c to empty.
@@ -222,16 +224,19 @@ public class CheckersGameBoard implements GameBoard {
 	private void clearPieceAt(Coordinate c) {
 		getPieceAt(c).setId(null);
 		getPieceAt(c).setPlayerId(null);
+		getPieceAt(c).setImageLocation("");
 	}
 	
 	// Kings piece
 	private boolean kingPieceAt(Coordinate c) {
 		if (c.getY() == 0 && currentPlayerId.equals(RED) && getPieceAt(c).getId().equals(RED)) {
 			getPieceAt(c).setId(REDKING);
+			getPieceAt(c).setImageLocation("assets/REDKING.GIF");
 			return true;
 		}
 		else if (c.getY() == BOARDSIZE-1 && currentPlayerId.equals(BLACK) && getPieceAt(c).getId().equals(BLACK)) {
 			getPieceAt(c).setId(BLACKKING);
+			getPieceAt(c).setImageLocation("assets/BLACKKING.GIF");
 			return true;
 		}
 		return false;
