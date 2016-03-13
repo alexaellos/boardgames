@@ -88,7 +88,7 @@ public class GUI implements ActionListener, GUIUpdater{
 	private void loadGameMenuFrame()
 	{
 		startFrame.setVisible(false);
-		gameMenuFrame = createNewFrame("Log In", 400, 200);
+		gameMenuFrame = createNewFrame("Game Menu", 400, 200);
 
 		panel = new JPanel(new GridBagLayout());
 
@@ -303,7 +303,7 @@ public class GUI implements ActionListener, GUIUpdater{
 	@Override
 	public String loadGameBoardGUI(GameBoard game) {
 		
-	/* GameBoard class needs to store the following:
+	/* Game[Board]GUI class needs to store the following:
 	 * - Tile background 1 color
 	 * - Tile background 2 color
 	 * - Player 1 icon
@@ -320,14 +320,7 @@ public class GUI implements ActionListener, GUIUpdater{
 	}
 
 	@Override
-	public String startGUI() {
-		loadStartFrame();
+	public String startGUI(ArrayList<String> gameList) {
 		return "";
-	}
-
-	@Override
-	public String startGUI(ArrayList<GameBoard> gameList) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
