@@ -9,4 +9,6 @@ public interface GameBoard {
 	public void setPieceAt(Coordinate c, Piece p);
 	public String getCurrentPlayer();
 	public void setCurrentPlayer(String s);
+	public boolean isGameOver();
+	public void setGameOver(boolean gameOver);
 }
