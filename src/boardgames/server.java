@@ -135,6 +135,7 @@ class Game {
       try {
         input = new ObjectInputStream(socket.getInputStream());
         output = new ObjectOutputStream(socket.getOutputStream());
+        sendGameList();
         getDesiredGame();
 
       } catch (IOException e) {
@@ -142,6 +143,17 @@ class Game {
       }
     } 
 
+    public void sendGameList() {
+    	StringBuffer sb = new StringBuffer();
+    	for (Games g: Games.values()) {
+    		sb.append(g+", ");
+    	}
+    	try {
+    		output.writeChars(sb.toString());
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    }
     public void getDesiredGame() {
     	try {
         desiredGame = input.readInt();
@@ -183,8 +195,16 @@ class Game {
 
     			Command comm = (Command)input.readObject();
 
-    			if (!legalMove(comm, this) ) {
-    				output.writeObject(instance);
+    			if (legalMove(comm, this) ) {
+    				//talk to player who just played
+    				output.writeObject(instance.getBoard());
+    				output.writeChars(instance.getCurrentPlayer());
+    				
+    			} else {
+    				//send an error
+    			}
+    			if (instance.getGameStatus()==gameStatus.gameOver ) {
+    				return;
     			}
 
           
