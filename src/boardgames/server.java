@@ -103,10 +103,11 @@ class Game {
 
    
     if (instance.commandIsValid(c)) {
-      Coordinate c1 = c.getCoord1();
-      Coordinate c2 = c.getCoord2();
-      Piece p1 = new Piece(c1);
-      instance.setPieceAt(c2, p1);
+    	//commandisvalid makes the move too if its true
+//      Coordinate c1 = c.getCoord1();
+//      Coordinate c2 = c.getCoord2();
+//      Piece p1 = new Piece(c1);
+//      instance.setPieceAt(c2, p1);
       currentPlayer = currentPlayer.opponent;
       currentPlayer.otherPlayerMoved();
       return true;
@@ -179,8 +180,9 @@ class Game {
 
     public void otherPlayerMoved() {
       try {
-			output.writeObject(instance);
-		  } catch (IOException e) {
+    	  output.writeObject(instance.getBoard());
+    	  output.writeChars(instance.getCurrentPlayer());
+      } catch (IOException e) {
 			// TODO Auto-generated catch block
 			 e.printStackTrace();
 		  }
