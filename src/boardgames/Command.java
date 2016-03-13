@@ -6,6 +6,8 @@ public class Command {
 
 	private Coordinate coord1, coord2;
 	private String playerId;
+	private boolean gameOver;
+	private Piece[][] board;
 
 	public Command(String playerId, Coordinate c1, Coordinate c2) {
 		setPlayerId(playerId);
@@ -17,6 +19,23 @@ public class Command {
 		setPlayerId(playerId);
 		setCoord1(c1);
 		setCoord2(null);
+	}
+
+	public Command(Coordinate c1) {
+		setPlayerId(null);
+		setCoord1(c1);
+		setCoord2(null);
+	}
+	
+	public Command(Coordinate c1, Coordinate c2) {
+		setPlayerId(null);
+		setCoord1(c1);
+		setCoord2(c2);
+	}
+	
+	public Command(Piece[][] board, boolean gameOver) {
+		setGameOver(gameOver);
+		setBoard(board);	
 	}
 
 	public Coordinate getCoord1() {
@@ -41,6 +60,22 @@ public class Command {
 
 	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+
+	public Piece[][] getBoard() {
+		return board;
+	}
+
+	public void setBoard(Piece[][] board) {
+		this.board = board;
 	}
 
 }

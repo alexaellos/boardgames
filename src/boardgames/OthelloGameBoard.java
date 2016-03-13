@@ -10,10 +10,12 @@ public class OthelloGameBoard implements GameBoard {
 	static final int boardSize = 8;
 
 	private String currentPlayerId; /* Whose turn it is */
-	private ArrayList<ArrayList<Piece>> board;
+	//private ArrayList<ArrayList<Piece>> board;
+	private Piece[][] board;
 	private ArrayList<Coordinate> flipQueue; 	/* overwritten whenever
-												 * piecesToFlip is called
-												 */
+												 * piecesToFlip is called */
+	
+	/*											 
 	public OthelloGameBoard() {
 		board = new ArrayList<ArrayList<Piece>>();
 		for (int x = 0; x < boardSize; x++) {
@@ -24,7 +26,29 @@ public class OthelloGameBoard implements GameBoard {
 			board.add(tmp);
 		}
 		
-		/* Initialize center tiles */
+		getPieceAt(new Coordinate(3, 3)).setId(player1);
+		getPieceAt(new Coordinate(4, 4)).setId(player1);
+		getPieceAt(new Coordinate(3, 3)).setPlayerId(player1);
+		getPieceAt(new Coordinate(4, 4)).setPlayerId(player1);
+
+		getPieceAt(new Coordinate(4, 3)).setId(player2);
+		getPieceAt(new Coordinate(3, 4)).setId(player2);
+		getPieceAt(new Coordinate(4, 3)).setPlayerId(player2);
+		getPieceAt(new Coordinate(3, 4)).setPlayerId(player2);
+	}
+	*/
+	
+	public OthelloGameBoard() {
+		board = new Piece[8][8];
+		for (int x = 0; x < boardSize; x++) {
+			Piece[] tmp = new Piece[8];
+			for (int y = 0; y < boardSize; y++) {
+				tmp[y] = new Piece(new Coordinate(x, y));
+			}
+			board[x] = tmp;
+		}
+		setCurrentPlayer(player1);
+		
 		getPieceAt(new Coordinate(3, 3)).setId(player1);
 		getPieceAt(new Coordinate(4, 4)).setId(player1);
 		getPieceAt(new Coordinate(3, 3)).setPlayerId(player1);
@@ -36,8 +60,7 @@ public class OthelloGameBoard implements GameBoard {
 		getPieceAt(new Coordinate(3, 4)).setPlayerId(player2);
 	}
 
-
-	public ArrayList<ArrayList<Piece>> getBoard() {
+	public Piece[][] getBoard() {
 		return board;
 	}
 
@@ -55,11 +78,9 @@ public class OthelloGameBoard implements GameBoard {
 	@Override
 	public boolean commandIsValid(Command c) {
 
-		if (getPieceAt(c.getCoord1()).getId() != null || !c.getPlayerId().equals(currentPlayerId)) {
+		if (getPieceAt(c.getCoord1()).getId() != null) {
 			/*
-			 * Player ID doesn't match the ID of the player who needs to make a
-			 * move or the coordinate being clicked isn't empty. Immediately
-			 * reject.
+			 * If coordinate being clicked isn't empty. Immediately reject.
 			 */
 			return false;
 		}
@@ -82,8 +103,6 @@ public class OthelloGameBoard implements GameBoard {
 
 		flipQueue = new ArrayList<Coordinate>();
 		Coordinate coord = c.getCoord1();
-		String pId = c.getPlayerId();
-		String id = pId;
 		ArrayList<Integer> directions = new ArrayList<Integer>();
 		directions.add(-1);
 		directions.add(0);
@@ -98,14 +117,12 @@ public class OthelloGameBoard implements GameBoard {
 				if (dx == 0 && dy == 0) {
 					continue; /* We can't work with 0, 0 */
 				}
-				while (inBounds(new_coord) && opposite(id).equals(getPieceAt(new_coord).getId())) {
+				while (inBounds(new_coord) && opposite(currentPlayerId).equals(getPieceAt(new_coord).getId())) {
 					temp.add(new Coordinate(new_coord));
-					System.out.println(temp + " " + new_coord + " " + pId + " " + getPieceAt(new_coord).getId());
 					new_coord.setX(new_coord.getX() + dx);
 					new_coord.setY(new_coord.getY() + dy);
-					System.out.println(temp + " " + new_coord);
 				}
-				if (temp.size() > 0 && inBounds(new_coord) && id.equals(getPieceAt(new_coord).getId())) {
+				if (temp.size() > 0 && inBounds(new_coord) && currentPlayerId.equals(getPieceAt(new_coord).getId())) {
 					for (Coordinate t : temp) {
 						flipQueue.add(t);
 					}
@@ -117,17 +134,29 @@ public class OthelloGameBoard implements GameBoard {
 
 		return flipQueue;
 	}
-
-	private void convertPieces(ArrayList<Piece> pieces, String id) {
-		/* Change the ID of each piece in `pieces` to `id` */
-		for (Piece p : pieces) {
-			p.setId(id);
+	
+	
+	public void makeMove(Command c) {
+		/* GIVEN:
+		 * Command `c` is already valid and is ready to be made
+		 * */
+		piecesToFlip(c); /* populates flipQueue  with correct data */
+		for (Coordinate  x : flipQueue) {
+			System.out.println("Flipping " + getPieceAt(x) + " to " + currentPlayerId);
+			getPieceAt(x).setId(currentPlayerId);
+			getPieceAt(x).setPlayerId(currentPlayerId);
 		}
+		getPieceAt(c.getCoord1()).setId(currentPlayerId);
+		getPieceAt(c.getCoord1()).setPlayerId(currentPlayerId);
+		/*convertPieces(flipQueue, currentPlayerId);*/
+		setCurrentPlayer(opposite(getCurrentPlayer()));
 	}
-
+	
+	
 	@Override
 	public Piece getPieceAt(Coordinate c) {
-		return board.get(c.getX()).get(c.getY());
+		return board[c.getX()][c.getY()];
+		/* return boardc.getX()).get(c.getY()); */
 	}
 
 	@Override
@@ -167,17 +196,40 @@ public class OthelloGameBoard implements GameBoard {
 	}
 	
 	
-	
-	
-	
 	public static void main(String[] args) {
 		OthelloGameBoard othelloTest = new OthelloGameBoard();
 		System.out.println(othelloTest);
-		othelloTest.setCurrentPlayer("whte");
-		Command c = new Command("whte", new Coordinate(4, 2));
-		System.out.println(c);
+		
+		Command c = new Command(new Coordinate(4, 2));
 		System.out.println(othelloTest.commandIsValid(c));
 		System.out.println(othelloTest.getFlipQueue());
+		othelloTest.makeMove(c);
+		
+		System.out.println(othelloTest);
+		System.out.println(othelloTest.getCurrentPlayer());
+		c.setCoord1(new Coordinate(5, 4));
+		System.out.println(othelloTest.commandIsValid(c));
+		System.out.println(othelloTest.getFlipQueue());
+		othelloTest.makeMove(c);
+		
+		System.out.println(othelloTest);
+		System.out.println(othelloTest.getCurrentPlayer());
+		c.setCoord1(new Coordinate(6, 5));
+		System.out.println(othelloTest.commandIsValid(c));
+		System.out.println(othelloTest.getFlipQueue());
+		othelloTest.makeMove(c);
+		
+		System.out.println(othelloTest);
+		System.out.println(othelloTest.getCurrentPlayer());
+		c.setCoord1(new Coordinate(4, 1));
+		System.out.println(othelloTest.commandIsValid(c));
+		System.out.println(othelloTest.getFlipQueue());
+		othelloTest.makeMove(c);
+		
+		System.out.println(othelloTest);
+
+
+		
 	}
 
 }

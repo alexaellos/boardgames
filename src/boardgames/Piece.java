@@ -42,6 +42,6 @@ public class Piece {
 	}
 	
 	public String toString() {
-		return playerId + ":" + id + "@" + coord;
+		return id/* + "@" + coord*/;
 	}
 }
