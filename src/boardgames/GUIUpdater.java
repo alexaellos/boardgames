@@ -7,6 +7,6 @@ public interface GUIUpdater {
 	public String loadGameBoardGUI(GameBoardGUI game);
 	public void updateGameBoardGUI(String playerName, Piece[][] board);
 	public String getGUIChange();
-	public String getGameTitle();
+	public String getSelectedGameTitle();
 	public String getPlayerName();
 }

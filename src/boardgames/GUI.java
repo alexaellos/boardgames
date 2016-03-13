@@ -320,13 +320,6 @@ public class GUI implements ActionListener, GUIUpdater{
 		boardGame.setVisible(true);
 		return "";
 	}
-	
-	@Override
-	public String loadWaitingGUI()
-	{
-		loadWaitingFrame();
-		return "";
-	}
 
 	@Override
 	public gameStatus startGUI(ArrayList<String> gameList) {
@@ -340,5 +333,15 @@ public class GUI implements ActionListener, GUIUpdater{
 			}
 		}
 		return gameStatus.gameSelected;
+	}
+
+	@Override
+	public String getSelectedGameTitle() {
+		return "";
+	}
+
+	@Override
+	public String getPlayerName() {
+		return "";
 	}
 }
