@@ -4,9 +4,6 @@ import java.util.Scanner;
 
 public class TicTacToeGameBoard implements GameBoard{
 	
-	public static final int EMPTY = 0;
-	public static final int CROSS = 1;
-	public static final int CIRCLE = 2;
 	public static final int ROWS = 3, COLS = 3;
 	
 	public static boolean gameOver;
@@ -18,6 +15,8 @@ public class TicTacToeGameBoard implements GameBoard{
 	
 	public static Piece[][] board = new Piece[ROWS][COLS];
 	public static Scanner in = new Scanner(System.in);
+	
+	private static GameBoardGUI ticTacToeGUI;
 	
 	public static void main(String[] args) {
 		playGame();
@@ -41,14 +40,15 @@ public class TicTacToeGameBoard implements GameBoard{
 	}
 	
 	public static void initGame() {
-	      for (int row = 0; row < ROWS; ++row) {
-	         for (int col = 0; col < COLS; ++col) {
-	            board[row][col] = new Piece(new Coordinate(row, col), "", null);
-	         }
-	      }
-	      gameStatus = boardgames.gameStatus.inProgress;
-	      currentPlayer = "X";
-	   }
+		ticTacToeGUI = new GameBoardGUI("Tic Tac Toe", ROWS, COLS);
+	    for (int row = 0; row < ROWS; ++row) {
+	       for (int col = 0; col < COLS; ++col) {
+	          board[row][col] = new Piece(new Coordinate(row, col), "", null);
+	       }
+	    }
+	    gameStatus = boardgames.gameStatus.inProgress;
+	    currentPlayer = "X";
+	}
 	
 	public static void makeMove(String currentTurn){
 		do {
@@ -152,5 +152,25 @@ public class TicTacToeGameBoard implements GameBoard{
 	@Override
 	public gameStatus getGameStatus(){
 		return gameStatus;
+	}
+	
+	@Override
+	public Piece[][] getBoard(){
+		return board;
+	}
+	
+	@Override
+	public int getBoardHeight(){
+		return ROWS;
+	}
+	
+	@Override
+	public int getBoardWidth(){
+		return COLS;
+	}
+	
+	@Override
+	public GameBoardGUI getGameBoardGUI(){
+		return ticTacToeGUI;
 	}
 }
