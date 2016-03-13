@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,7 +26,8 @@ public class client {
     private BufferedReader in;
     private PrintWriter out;
     private GameBoard instance;
-//    private Player player;
+    private String playerName;
+    private ArrayList<String> listOfGames;
 
     /**
      * Constructs the client by connecting to a server
@@ -37,6 +39,7 @@ public class client {
         in = new BufferedReader(new InputStreamReader(
             socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        listOfGames = new ArrayList<String>();
     }
     
 
@@ -54,24 +57,36 @@ public class client {
      * will be sent a "QUIT" message also.
      */
     public void play() throws Exception {
-        String response;
+        String responseString;
+        Object responseObject;
+        // Get list of games EX: "Tic_Tac_Toe,Checkers,Othello"
+        responseString = in.readLine();
+        for (String g : responseString.split(",")){
+        	listOfGames.add(g);
+        }
+        GUI gui = new GUI();
+        gameStatus isLoading = gui.startGUI(listOfGames);
+        gui.getSelectedGameTitle(); 
+        // 	Send SelectedGameTitle to server
+        //	Server will response with whether there is a Connection or not
+        gui.getPlayerName();
         try {
-            response = in.readLine();
-            if (response.startsWith("WELCOME")) {
-                char mark = response.charAt(8);
+            responseString = in.readLine();
+            if (responseString.startsWith("WELCOME")) {
+                char mark = responseString.charAt(8);
             }
             while (true) {
-                response = in.readLine();
-                if (response.startsWith("VALID_MOVE")) {
-                } else if (response.startsWith("OPPONENT_MOVED")) {
-                    int loc = Integer.parseInt(response.substring(15));
-                } else if (response.startsWith("VICTORY")) {
+                responseString = in.readLine();
+                if (responseString.startsWith("VALID_MOVE")) {
+                } else if (responseString.startsWith("OPPONENT_MOVED")) {
+                    int loc = Integer.parseInt(responseString.substring(15));
+                } else if (responseString.startsWith("VICTORY")) {
                     break;
-                } else if (response.startsWith("DEFEAT")) {
+                } else if (responseString.startsWith("DEFEAT")) {
                     break;
-                } else if (response.startsWith("TIE")) {
+                } else if (responseString.startsWith("TIE")) {
                     break;
-                } else if (response.startsWith("MESSAGE")) {
+                } else if (responseString.startsWith("MESSAGE")) {
                 }
             }
             out.println("QUIT");
@@ -89,8 +104,6 @@ public class client {
         while (true) {
             String serverAddress = (args.length == 0) ? "localhost" : args[1];
             client client = new client(serverAddress);
-            GUI gui = new GUI();
-            gui.loadStartFrame();
             client.play();
         }
     }
