@@ -1,5 +1,6 @@
 package boardgames;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -8,6 +9,7 @@ public class OthelloGameBoard implements GameBoard {
 	static final String player1 = "whte";
 	static final String player2 = "blck";
 	static final int boardSize = 8;
+	static GameBoardGUI guiAssets;
 
 	private String currentPlayerId; /* Whose turn it is */
 	private gameStatus gameStatus;
@@ -38,6 +40,14 @@ public class OthelloGameBoard implements GameBoard {
 		getPieceAt(new Coordinate(3, 4)).setId(player2);
 		getPieceAt(new Coordinate(4, 3)).setPlayerId(player2);
 		getPieceAt(new Coordinate(3, 4)).setPlayerId(player2);
+		
+		if (guiAssets == null) {
+			guiAssets = new GameBoardGUI("Othello", boardSize, boardSize);
+			guiAssets.setGameBoardColors(Color.decode("#008000"), Color.decode("#008000"));
+			guiAssets.setPlayerIcons("othello_white.png", "othello_black.png");
+		}
+		
+		
 	}
 
 	public Piece[][] getBoard() {
@@ -280,8 +290,7 @@ public class OthelloGameBoard implements GameBoard {
 
 	@Override
 	public GameBoardGUI getGameBoardGUI() {
-		// TODO Auto-generated method stub
-		return null;
+		return guiAssets;
 	}
 
 }
