@@ -104,6 +104,16 @@ public class CheckersGameBoard implements GameBoard {
 		checkersGUI.setPlayerIcons("assets/RED.GIF", "assets/BLACK.GIF");
 	}
 	
+	@Override
+	public int getBoardHeight() {
+		return BOARDSIZE;
+	}
+
+	@Override
+	public int getBoardWidth() {
+		return BOARDSIZE;
+	}
+	
 	//====================================================
 	// Core Functions
 	//====================================================
@@ -492,7 +502,6 @@ public class CheckersGameBoard implements GameBoard {
 			System.out.println("GAMEOVER! THERE IS A DRAW");
 		
 		in.close();
-	}
-		
+	}	
 }
 
