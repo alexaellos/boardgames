@@ -1,5 +1,6 @@
 package boardgames;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,13 +17,15 @@ public class CheckersGameBoard implements GameBoard {
 	
 	private gameStatus gamestatus;
 	ArrayList<CheckersMove> continuousJumps;
+	
+	private GameBoardGUI checkersGUI;
 
 	// Initializes new Checkers Game
 	public CheckersGameBoard() {
-		board = new Piece[BOARDSIZE][BOARDSIZE];
 		currentPlayerId = RED;
 		gamestatus = boardgames.gameStatus.inProgress;
 		initializeBoard();
+		initializeGUI();
 	}
 
 	//===============================================
@@ -31,6 +34,7 @@ public class CheckersGameBoard implements GameBoard {
 	
 	// Initializes new Checkers Game Board
 	private void initializeBoard() {
+		board = new Piece[BOARDSIZE][BOARDSIZE];
 		for (int x = 0; x < BOARDSIZE; x++) {
 			for (int y = 0; y < BOARDSIZE; y++) {
 				Coordinate c = new Coordinate(x, y);
@@ -92,6 +96,12 @@ public class CheckersGameBoard implements GameBoard {
 	// Returns board
 	public Piece[][] getBoard() {
 		return board;
+	}
+	
+	private void initializeGUI() {
+		checkersGUI = new GameBoardGUI("Checkers", BOARDSIZE, BOARDSIZE);
+		checkersGUI.setGameBoardColors(Color.RED, Color.BLACK);
+		checkersGUI.setPlayerIcons("assets/RED.GIF", "assets/BLACK.GIF");
 	}
 	
 	//====================================================
@@ -169,6 +179,10 @@ public class CheckersGameBoard implements GameBoard {
 			switchPlayer();
 		
 		isGameOver();
+	}
+	
+	public GameBoardGUI getGameBoardGUI() {
+		return checkersGUI;
 	}
 	
 	//=======================================================
@@ -383,9 +397,6 @@ public class CheckersGameBoard implements GameBoard {
 		return new Coordinate(x, y);
 	}
 	
-	
-	// Don't really need these...
-	// Returns current player.
 	public String getCurrentPlayer() {
 		return currentPlayerId;
 	}
