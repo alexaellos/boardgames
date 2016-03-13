@@ -41,8 +41,8 @@ public class server {
         listener = new ServerSocket(PORT);
 
         Game game = new Game();
-        Game.Player playerX = game.new Player(listener.accept(), 'X');
-        Game.Player playerO = game.new Player(listener.accept(), 'O');
+        Game.Player playerX = game.new Player(listener.accept(), "X");
+        Game.Player playerO = game.new Player(listener.accept(), "O");
 
         playerX.setOpponent(playerO);
         playerO.setOpponent(playerX);
@@ -79,21 +79,21 @@ class Game {
   //don't need board will have hasWinner();
   //don't need boardfilledup
 
-  public boolean checkGamePreference(int player1, int player2) {
-    if (player1==(player2)) {
+  public boolean checkGamePreference(String desiredGame, String desiredGame2) {
+    if (desiredGame==(desiredGame2)) {
       return true;
     }
     else {
       return false;
     }
   }
-  public void setGameBoard(int player1) {
-    if (player1==(0)) {
+  public void setGameBoard(String player1) {
+    if (player1.equals("Tic_Tac_Toe")) {
       instance = new TicTacToeGameBoard();
-    } else if (player1==(1)) {
+    } else if (player1.equals("Othello")) {
       instance = new OthelloGameBoard();
-    } else if (player1==(2)) {
-//      instance = new CheckersGameBoard();
+    } else if (player1.equals("Checkers")) {
+      instance = new CheckersGameBoard();
     }
 
      
@@ -108,6 +108,7 @@ class Game {
 //      Coordinate c2 = c.getCoord2();
 //      Piece p1 = new Piece(c1);
 //      instance.setPieceAt(c2, p1);
+
       currentPlayer = currentPlayer.opponent;
       currentPlayer.otherPlayerMoved();
       return true;
@@ -122,15 +123,15 @@ class Game {
     private Socket socket;
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private char mark;
+    private String mark;
     private Player opponent;
-    int desiredGame;
+    String desiredGame;
     
      /**
      * Constructs a handler thread, squirreling away the socket.
      * All the interesting work is done in the run method.
      */
-    public Player(Socket socket, char mark) {
+    public Player(Socket socket, String mark) {
       this.socket = socket;
       this.mark = mark;
       try {
@@ -143,7 +144,26 @@ class Game {
         System.out.println("Player could not connect or he died");
       }
     } 
-
+    
+    public void updateName() {
+    	try {
+    		mark = input.readUTF();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    }
+    public void sendPosition() {
+    	try {
+    		if (mark.equals("X")) {
+    			output.writeChars("You are first");
+    		} else {
+    			output.writeChars("You are second");
+    		}
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	
+    }
     public void sendGameList() {
     	StringBuffer sb = new StringBuffer();
     	for (Games g: Games.values()) {
@@ -157,7 +177,7 @@ class Game {
     }
     public void getDesiredGame() {
     	try {
-        desiredGame = input.readInt();
+        desiredGame = input.readUTF();
       } catch (IOException e) {
     		// TODO Auto-generated catch block
         e.printStackTrace();
@@ -192,7 +212,9 @@ class Game {
     	try{
     		
         //TODO: how do player know they have to go first??
-
+    		sendPosition();
+    		updateName();
+    		
     		while (true) {
 
     			Command comm = (Command)input.readObject();
@@ -201,6 +223,7 @@ class Game {
     				//talk to player who just played
     				output.writeObject(instance.getBoard());
     				output.writeChars(instance.getCurrentPlayer());
+    				//how do set instance current player?
     				
     			} else {
     				//send an error
