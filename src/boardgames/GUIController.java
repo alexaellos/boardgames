@@ -25,6 +25,8 @@ public class GUIController {
 /* Changes List:
  * - startGUI() will return a gameStatus.gameSelected enum
  * -- occurs after the player enters their name and selects a game
+ * - GUIUpdater
+ * -- now has get methods for player name and game title
  *
  * 
  */
