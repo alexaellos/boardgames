@@ -1,6 +1,5 @@
 package boardgames;
 
-//import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TicTacToeGameBoard implements GameBoard{
@@ -31,7 +30,7 @@ public class TicTacToeGameBoard implements GameBoard{
 	      initGame();
 	      do {
 	         makeMove(currentPlayer);
-	         updateGame(currentPlayer, currentRow, currentCol);
+	         updateState(currentPlayer, currentRow, currentCol);
 	         printBoard();
 	         if (currentState == CROSS_WON) {
 	            System.out.println("'X' wins!");
@@ -76,6 +75,7 @@ public class TicTacToeGameBoard implements GameBoard{
             board[currentRow][currentCol].setId(c.getPlayerId());
             return true;
          } else {
+        	 System.out.println("Invalid Move!");
             return false;
          }
 	}
@@ -86,7 +86,7 @@ public class TicTacToeGameBoard implements GameBoard{
 		
 	}
 	
-	public static void updateGame(String currentTurn, int currentRow, int currentCol) {
+	public static void updateState(String currentTurn, int currentRow, int currentCol) {
 	      if (hasWon(currentTurn, currentRow, currentCol)) {
 	         currentState = (currentTurn == "X") ? CROSS_WON : CIRCLE_WON;
 	      } else if (isDraw()) {
@@ -167,5 +167,15 @@ public class TicTacToeGameBoard implements GameBoard{
 	public void setCurrentPlayer(String s) {
 		currentPlayer = s;
 
+	}
+	
+	@Override
+	public boolean isGameOver(){
+		return true;
+	}
+	
+	@Override
+	public void setGameOver(boolean gameOver){
+		
 	}
 }

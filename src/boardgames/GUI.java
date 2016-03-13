@@ -119,7 +119,7 @@ public class GUI implements ActionListener, GUIUpdater{
 		ticTacToe.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				setBoardColors(Color.WHITE, Color.WHITE);
-				loadPlayerIcons("X.GIF", "O.GIF");		// Icons need to be 240 x 240
+				//loadPlayerIcons("X.GIF", n"O.GIF");		// Icons need to be 240 x 240
 				JFrame boardGame = loadBoardGameFrame("Tic Tac Toe", 3, 3);
 				boardGame.setVisible(true);
 			}
@@ -128,7 +128,7 @@ public class GUI implements ActionListener, GUIUpdater{
 		checkers.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				setBoardColors(Color.BLACK, Color.RED);
-				loadPlayerIcons("X.GIF", "O.GIF");		// Icons need to be 90 x 90
+				//loadPlayerIcons("X.GIF", "O.GIF");		// Icons need to be 90 x 90
 				JFrame boardGame = loadBoardGameFrame("Checkers", 8, 8);
 				boardGame.setVisible(true);
 			}
@@ -138,7 +138,7 @@ public class GUI implements ActionListener, GUIUpdater{
 		othello.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				setBoardColors(Color.BLACK, Color.WHITE);
-				loadPlayerIcons("X.GIF", "O.GIF");
+				//loadPlayerIcons("X.GIF", "O.GIF");
 				JFrame boardGame = loadBoardGameFrame("Othello", 8, 8);
 				boardGame.setVisible(true);
 			}
@@ -247,9 +247,9 @@ public class GUI implements ActionListener, GUIUpdater{
 		boardColor2 = color2;
 	}
 
-	private void loadPlayerIcons(String player1IconImgLocation, String player2IconImgLocation){
-		player1Icon = new ImageIcon(getClass().getResource(player1IconImgLocation));
-		player2Icon = new ImageIcon(getClass().getResource(player2IconImgLocation));
+	private void loadPlayerIcons(ImageIcon imageIcon, ImageIcon imageIcon2){
+		player1Icon = imageIcon;
+		player2Icon = imageIcon2;
 	}
 
 	public void updateGameBoardGUI(String playerName, ArrayList<ArrayList<Piece>> board){
@@ -301,7 +301,7 @@ public class GUI implements ActionListener, GUIUpdater{
 	}
 
 	@Override
-	public String loadGameBoardGUI(GameStateGui game) {
+	public String loadGameBoardGUI(GameStateGUI game) {
 		
 	/* Game[Board]GUI class needs to store the following:
 	 * - Tile background 1 color
@@ -321,6 +321,7 @@ public class GUI implements ActionListener, GUIUpdater{
 
 	@Override
 	public String startGUI(ArrayList<String> gameList) {
+		loadStartFrame();
 		return "";
 	}
 

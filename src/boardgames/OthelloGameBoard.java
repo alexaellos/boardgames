@@ -8,9 +8,11 @@ public class OthelloGameBoard implements GameBoard {
 	static final String player1 = "whte";
 	static final String player2 = "blck";
 	static final int boardSize = 8;
+	
 
 	private String currentPlayerId; /* Whose turn it is */
 	//private ArrayList<ArrayList<Piece>> board;
+	private boolean gameOver;
 	private Piece[][] board;
 	private ArrayList<Coordinate> flipQueue; 	/* overwritten whenever
 												 * piecesToFlip is called */
@@ -48,6 +50,7 @@ public class OthelloGameBoard implements GameBoard {
 			board[x] = tmp;
 		}
 		setCurrentPlayer(player1);
+		setGameOver(false);
 		
 		getPieceAt(new Coordinate(3, 3)).setId(player1);
 		getPieceAt(new Coordinate(4, 4)).setId(player1);
@@ -135,6 +138,26 @@ public class OthelloGameBoard implements GameBoard {
 		return flipQueue;
 	}
 	
+	
+	private void checkGameState() {
+		/* Checks for gameOver or no-move-allowed conditions and handles them appropriately */
+		for (int x = 0; x < boardSize; x++) {
+			for (int y = 0; y < boardSize; y++) {
+				if (commandIsValid(new Command(new Coordinate(x, y)))) {
+					return; /* At least one possible command; we're good */
+				}
+			}
+		}
+		setCurrentPlayer(opposite(getCurrentPlayer())); /* Player loses his/her turn */
+		for (int x = 0; x < boardSize; x++) {
+			for (int y = 0; y < boardSize; y++) {
+				if (commandIsValid(new Command(new Coordinate(x, y)))) {
+					return; /* At least one possible command for other player; we're good */
+				}
+			}
+		}
+		setGameOver(false); /* No possible moves for either party. Game is over. */
+	}
 	
 	public void makeMove(Command c) {
 		/* GIVEN:
@@ -230,6 +253,14 @@ public class OthelloGameBoard implements GameBoard {
 
 
 		
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 
 }
