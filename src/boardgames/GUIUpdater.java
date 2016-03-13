@@ -9,4 +9,5 @@ public interface GUIUpdater {
 	public String getGUIChange();
 	public String getSelectedGameTitle();
 	public String getPlayerName();
+	public gameStatus restartGameMenuGUI();
 }
