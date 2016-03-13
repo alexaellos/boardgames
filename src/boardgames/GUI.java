@@ -344,4 +344,10 @@ public class GUI implements ActionListener, GUIUpdater{
 	public String getPlayerName() {
 		return "";
 	}
+
+	@Override
+	public gameStatus restartGameMenuGUI() {
+		// TODO Auto-generated method stub
+		return gameStatus.gameSelected;
+	}
 }
