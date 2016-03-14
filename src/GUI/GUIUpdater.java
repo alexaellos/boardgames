@@ -1,9 +1,13 @@
-package boardgames;
+package GUI;
 
 import java.util.ArrayList;
 
+import boardgames.GameBoardGUI;
+import boardgames.Piece;
+import boardgames.gameStatus;
+
 public interface GUIUpdater {
-	public gameStatus startGUI(ArrayList<String> gameList);		// Replace with Game[Board]GUI later
+	public gameStatus startGUI();		
 	public String loadGameBoardGUI(GameBoardGUI game);
 	public void updateGameBoardGUI(String playerName, Piece[][] board);
 	public String getGUIChange();

@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import GUI.GUI;
+
 /**
  *
  *  Client -> Server           Server -> Client

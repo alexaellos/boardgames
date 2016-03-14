@@ -25,7 +25,6 @@ public class GameBoardGUI {
 		this.boardColor1 = boardColor1;
 		this.boardColor2 = boardColor2;
 	}
-
 	
 	public String getTitle()
 	{
