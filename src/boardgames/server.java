@@ -110,7 +110,8 @@ class Game {
 //      instance.setPieceAt(c2, p1);
 
       currentPlayer = currentPlayer.opponent;
-      currentPlayer.otherPlayerMoved();
+      currentPlayer.sendBoard();
+      currentPlayer.sendCurrentPlayer();
       return true;
     }
 
@@ -198,15 +199,25 @@ class Game {
       this.opponent = opponent;
     }
 
-    public void otherPlayerMoved() {
+    public void sendBoard() {
       try {
     	  output.writeObject(instance.getBoard());
-    	  output.writeChars(instance.getCurrentPlayer());
+    	  output.flush();
       } catch (IOException e) {
 			// TODO Auto-generated catch block
 			 e.printStackTrace();
 		  }
     }
+    
+    public void sendCurrentPlayer() {
+        try {
+      	  output.writeObject(instance.getCurrentPlayer());
+      	  output.flush();
+        } catch (IOException e) {
+  			// TODO Auto-generated catch block
+  			 e.printStackTrace();
+  		  }
+      }
     
     public void run(){ //plays the game after being matched
     	try{
@@ -214,6 +225,8 @@ class Game {
         //TODO: how do player know they have to go first??
     		sendPosition();
     		updateName();
+    		sendBoard();
+    		sendCurrentPlayer();
     		
     		while (true) {
 
@@ -222,11 +235,17 @@ class Game {
     			if (legalMove(comm, this) ) {
     				//talk to player who just played
     				output.writeObject(instance.getBoard());
-    				output.writeChars(instance.getCurrentPlayer());
+    				output.flush();
+    				output.writeObject(instance.getCurrentPlayer());
+    				output.flush();
     				//how do set instance current player?
     				
     			} else {
     				//send an error
+    				output.writeObject(instance.getBoard());
+    				output.flush();
+    				output.writeObject(instance.getCurrentPlayer());
+    				output.flush();
     			}
     			if (instance.getGameStatus()==gameStatus.gameOver ) {
     				return;

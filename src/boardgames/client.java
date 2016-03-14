@@ -29,10 +29,8 @@ public class client {
     private Socket socket;
     private ObjectInputStream inObject;
     private ObjectOutputStream outObject;
-    private GameBoard instance;
     private String playerName;
     private String gameTitle;
-    private ArrayList<String> listOfGames;
 
     /**
      * Constructs the client by connecting to a server
@@ -44,7 +42,6 @@ public class client {
         outObject = new ObjectOutputStream(socket.getOutputStream());
         outObject.flush();
         inObject = new ObjectInputStream(socket.getInputStream());
-        listOfGames = new ArrayList<String>();
     }
     
 
@@ -64,44 +61,29 @@ public class client {
     public void play() throws Exception {
         String responseString;
         Object responseObject;
-        // Get list of games EX: "Tic_Tac_Toe,Checkers,Othello"
-        responseString = (String) inObject.readObject();
-        for (String g : responseString.split(",")){
-        	listOfGames.add(g);
-        }
-        System.out.println("After getting the list of games");
         GUI gui = new GUI();
-        gameStatus isGameSelected = gui.startGUI(listOfGames);
-        System.out.println("After the .startGUI has been called");
-        while(isGameSelected != gameStatus.gameSelected){
-        	// Wait For user to pick something
-        }
-        gameTitle = gui.getSelectedGameTitle();
+        gameStatus isGameSelected = gui.startGUI();
+        System.out.println(isGameSelected);
+        gameTitle = gui.getSelectedGame();
         // 	Send SelectedGameTitle to server
         outObject.writeObject(gameTitle);
+        outObject.flush();
+        // Receive whether I am player1 or player2
+        String whichPlayer = (String) inObject.readObject();     
         playerName = gui.getPlayerName();
-        //	Server will response with whether there is a Connection or not
-        String isThereConnection = (String) inObject.readObject();
+        System.out.println(playerName);
+        //	Send Sever my name
+        outObject.writeObject(playerName);
+        outObject.flush();
+        
+        // Get the 2D Array from Server
+        Piece[][] board = (Piece[][]) inObject.readObject();
+        // Get Current Player from Server as String
+        String currentPlayer = (String) inObject.readObject(); 
         try {
-            responseString = (String) inObject.readObject();
-            if (responseString.startsWith("WELCOME")) {
-                char mark = responseString.charAt(8);
-            }
             while (true) {
-                responseString = (String) inObject.readObject();
-                if (responseString.startsWith("VALID_MOVE")) {
-                } else if (responseString.startsWith("OPPONENT_MOVED")) {
-                    int loc = Integer.parseInt(responseString.substring(15));
-                } else if (responseString.startsWith("VICTORY")) {
-                    break;
-                } else if (responseString.startsWith("DEFEAT")) {
-                    break;
-                } else if (responseString.startsWith("TIE")) {
-                    break;
-                } else if (responseString.startsWith("MESSAGE")) {
-                }
+            	
             }
-            outObject.writeObject("QUIT");
         }
         finally {
             socket.close();
@@ -116,7 +98,6 @@ public class client {
         while (true) {
             String serverAddress = (args.length == 0) ? "localhost" : args[1];
             client client = new client(serverAddress);
-            System.out.println("Before creating client instance");
             client.play();
         }
     }
