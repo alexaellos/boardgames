@@ -167,10 +167,10 @@ class Game {
     public void sendGameList() {
     	StringBuffer sb = new StringBuffer();
     	for (Games g: Games.values()) {
-    		sb.append(g+", ");
+    		sb.append(g+",");
     	}
     	try {
-    		output.writeChars(sb.toString());
+    		output.writeChars(sb.toString().substring(0, sb.toString().length()-1));
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
