@@ -1,6 +1,8 @@
 package boardgames;
 
 import java.io.BufferedReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -25,10 +27,11 @@ public class client {
 
     private static int PORT = 8901;
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream inObject;
+    private ObjectOutputStream outObject;
     private GameBoard instance;
     private String playerName;
+    private String gameTitle;
     private ArrayList<String> listOfGames;
 
     /**
@@ -38,9 +41,9 @@ public class client {
         // Setup networking
      	
         socket = new Socket(serverAddress, PORT);
-        in = new BufferedReader(new InputStreamReader(
-            socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
+        outObject = new ObjectOutputStream(socket.getOutputStream());
+        outObject.flush();
+        inObject = new ObjectInputStream(socket.getInputStream());
         listOfGames = new ArrayList<String>();
     }
     
@@ -62,23 +65,30 @@ public class client {
         String responseString;
         Object responseObject;
         // Get list of games EX: "Tic_Tac_Toe,Checkers,Othello"
-        responseString = in.readLine();
+        responseString = (String) inObject.readObject();
         for (String g : responseString.split(",")){
         	listOfGames.add(g);
         }
+        System.out.println("After getting the list of games");
         GUI gui = new GUI();
-        gameStatus isLoading = gui.startGUI(listOfGames);
-        gui.getSelectedGameTitle(); 
+        gameStatus isGameSelected = gui.startGUI(listOfGames);
+        System.out.println("After the .startGUI has been called");
+        while(isGameSelected != gameStatus.gameSelected){
+        	// Wait For user to pick something
+        }
+        gameTitle = gui.getSelectedGameTitle();
         // 	Send SelectedGameTitle to server
+        outObject.writeObject(gameTitle);
+        playerName = gui.getPlayerName();
         //	Server will response with whether there is a Connection or not
-        gui.getPlayerName();
+        String isThereConnection = (String) inObject.readObject();
         try {
-            responseString = in.readLine();
+            responseString = (String) inObject.readObject();
             if (responseString.startsWith("WELCOME")) {
                 char mark = responseString.charAt(8);
             }
             while (true) {
-                responseString = in.readLine();
+                responseString = (String) inObject.readObject();
                 if (responseString.startsWith("VALID_MOVE")) {
                 } else if (responseString.startsWith("OPPONENT_MOVED")) {
                     int loc = Integer.parseInt(responseString.substring(15));
@@ -91,7 +101,7 @@ public class client {
                 } else if (responseString.startsWith("MESSAGE")) {
                 }
             }
-            out.println("QUIT");
+            outObject.writeObject("QUIT");
         }
         finally {
             socket.close();
@@ -106,6 +116,7 @@ public class client {
         while (true) {
             String serverAddress = (args.length == 0) ? "localhost" : args[1];
             client client = new client(serverAddress);
+            System.out.println("Before creating client instance");
             client.play();
         }
     }
