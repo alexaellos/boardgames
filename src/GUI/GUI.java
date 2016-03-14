@@ -35,7 +35,8 @@ public class GUI implements ActionListener, GUIUpdater{
 	private String player1Id;
 	private String player2Id;
 
-	public String playerName;
+	private String playerName;
+	private String selectedGame;
 	private Games[] gamesList;
 
 	public GUI()
@@ -47,15 +48,17 @@ public class GUI implements ActionListener, GUIUpdater{
 	@Override
 	public gameStatus startGUI() {
 
-		//loadStartFrame();
-		String loadingYet = "";
-		while(!loadingYet.equals("done")){
-			// do something
-
-			if(loadingYet.equals("done")){
-				break;
-			}
-		}
+		playerName = JOptionPane.showInputDialog(new JFrame("Frame"), "Enter name:", "Log In", JOptionPane.PLAIN_MESSAGE);
+		selectedGame = JOptionPane.showInputDialog(new JFrame("Frame"), "Select game:", "Game Menu", JOptionPane.PLAIN_MESSAGE);
+//		//loadStartFrame();
+//		String loadingYet = "";
+//		while(!loadingYet.equals("done")){
+//			// do something
+//
+//			if(loadingYet.equals("done")){
+//				break;
+//			}
+//		}
 		return gameStatus.gameSelected;
 	}
 
@@ -313,13 +316,13 @@ public class GUI implements ActionListener, GUIUpdater{
 	}
 
 	@Override
-	public String getSelectedGameTitle() {
-		return "";
+	public String getSelectedGame() {
+		return selectedGame;
 	}
 
 	@Override
 	public String getPlayerName() {
-		return "";
+		return playerName;
 	}
 	
 	@Override
