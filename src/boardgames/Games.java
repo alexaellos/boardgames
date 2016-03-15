@@ -1,16 +1,7 @@
 package boardgames;
 
 public enum Games {
-	
-	Tic_Tac_Toe{
-		public GameBoard getGameBoard(){
-			return new TicTacToeGameBoard();
-		}
-		
-		public String toString(){
-			return "Tic_Tac_Toe";
-		}
-	}, 
+	 
 	Checkers{
 		public GameBoard getGameBoard(){
 			return new CheckersGameBoard();
@@ -20,6 +11,15 @@ public enum Games {
 			return "Checkers";
 		}
 	}, 
+	Tic_Tac_Toe{
+		public GameBoard getGameBoard(){
+			return new TicTacToeGameBoard();
+		}
+		
+		public String toString(){
+			return "Tic_Tac_Toe";
+		}
+	},
 	Othello{
 		public GameBoard getGameBoard(){
 			return new OthelloGameBoard();
