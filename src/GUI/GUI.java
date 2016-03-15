@@ -53,8 +53,13 @@ public class GUI implements ActionListener, GUIUpdater{
 		currentFrame.setVisible(false);
 		playerName = dialog.createTextInputDialog("Log In", "Enter your name:");
 		
-		if((playerName != null) && (playerName.length() > 0)){
-			loadGameMenu();
+		if(playerName != null){
+			if(playerName.length() > 0){
+				loadGameMenu();
+			}
+			else{
+				startGUI();
+			}
 		}
 		else{
 			status = gameStatus.exit;

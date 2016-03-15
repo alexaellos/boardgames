@@ -17,7 +17,7 @@ public class InputDialog {
 		//TODO: Add string verification so that user input isn't empty
 		//JOptionPane optionPane = new JOptionPane();
 		String textInput = (String) JOptionPane.showInputDialog(frame, inputMsg, frameTitle, 
-				JOptionPane.PLAIN_MESSAGE, null, null, "Robot");
+				JOptionPane.PLAIN_MESSAGE, null, null, "");
 		return textInput;
 	}
 
