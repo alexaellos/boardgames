@@ -133,7 +133,6 @@ class Game {
     public void toDisappoint() throws IOException {
     	output.writeObject("ERROR: Nobody wants to play with you. You will be disconnected.");
 		output.flush();
-
     }
 
     public void setOpponent(Player opponent) {
