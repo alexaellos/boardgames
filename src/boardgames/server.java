@@ -69,10 +69,11 @@ class Game {
 
 	public synchronized boolean legalMove(Command c , Player player) throws IOException {
 		if (instance.commandIsValid(c)) {
+			instance.makeMove(c);
 //    	commandisvalid makes the move and returns a boolean
-//			currentPlayer = currentPlayer.opponent;
-//			currentPlayer.sendBoard();
-//			currentPlayer.sendCurrentPlayer();
+			currentPlayer = currentPlayer.opponent;
+			currentPlayer.sendBoard();
+			currentPlayer.sendCurrentPlayer();
 			return true;
 		}
 		return false;
