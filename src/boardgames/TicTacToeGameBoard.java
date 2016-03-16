@@ -1,5 +1,6 @@
 package boardgames;
 
+import java.awt.Color;
 import java.util.Scanner;
 
 public class TicTacToeGameBoard implements GameBoard{
@@ -19,7 +20,6 @@ public class TicTacToeGameBoard implements GameBoard{
 	private static GameBoardGUI ticTacToeGUI;
 	
 	public TicTacToeGameBoard() {
-		ticTacToeGUI = new GameBoardGUI("Tic Tac Toe", ROWS, COLS);
 	    for (int row = 0; row < ROWS; ++row) {
 	       for (int col = 0; col < COLS; ++col) {
 	          board[row][col] = new Piece(new Coordinate(row, col), "", null, "");
@@ -27,6 +27,11 @@ public class TicTacToeGameBoard implements GameBoard{
 	    }
 	    gameStatus = boardgames.gameStatus.inProgress;
 	    currentPlayer = "X";
+	    
+	    if (ticTacToeGUI == null) {
+	    	ticTacToeGUI = new GameBoardGUI("Othello", ROWS, COLS);
+	    	ticTacToeGUI.setGameBoardColors(Color.decode("#008000"), Color.decode("#008000"));
+		}
 	}
 	
 	public static void main(String[] args) {
