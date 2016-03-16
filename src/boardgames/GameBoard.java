@@ -8,4 +8,5 @@ public interface GameBoard {
 	public int getBoardWidth();
 	public gameStatus getGameStatus();
 	public GameBoardGUI getGameBoardGUI();
+	public void makeMove(Command c);
 }

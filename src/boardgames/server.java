@@ -13,38 +13,21 @@ public class server {
 	private Socket socket;
 	
 	static int PORT = 8901;
-	
-	private void update(){
-		
-	}
-	
-	private void run(){
-		
-	}
-	
-	private void initSocket(){
-		
-	}
-	
-	private void send(){
-		
-	}
 
 	public static void main(String[] args) throws Exception {
 		ServerSocket listener = null ;
 		System.out.println("Server is running");
 		try {
+			listener = new ServerSocket(PORT);
 			while (true) {
-				listener = new ServerSocket(PORT);
-				
 				Game game = new Game();
 				Game.Player playerX = game.new Player(listener.accept(), "X");
 				Game.Player playerO = game.new Player(listener.accept(), "O");
 
 				playerX.setOpponent(playerO);
 				playerO.setOpponent(playerX);
-				if(game.checkGamePreference(playerX.desiredGame,playerO.desiredGame)) {
-					game.setGameBoard(playerX.desiredGame);
+				if(game.checkGamePreference(playerX.getDesiredGameLocally(),playerO.getDesiredGameLocally())) {
+					game.setGameBoard(playerX.getDesiredGameLocally());
 				}
 				else {
 					playerX.toDisappoint();
@@ -60,11 +43,9 @@ public class server {
 		finally {
 			listener.close();
 		}
-    
 	}
-
-
 }
+
 class Game {
 	private GameBoard instance;
 	Player currentPlayer;
@@ -73,34 +54,25 @@ class Game {
 	//don't need board filled up
 
 	public boolean checkGamePreference(String desiredGame, String desiredGame2) {
-		if (desiredGame.equals(desiredGame2)){
-			return true;
-		}
-		else {
-			return false;
-		}
+		return desiredGame.equals(desiredGame2);
 	}
-	public void setGameBoard(String player1) {
-		if (player1.equals("Tic_Tac_Toe")) {
+	
+	public void setGameBoard(String game) {
+		if (game.equals("Tic_Tac_Toe")) {
 			instance = new TicTacToeGameBoard();
-		} else if (player1.equals("Othello")) {
+		} else if (game.equals("Othello")) {
 			instance = new OthelloGameBoard();
-		} else if (player1.equals("Checkers")) {
+		} else if (game.equals("Checkers")) {
 			instance = new CheckersGameBoard();
 		}
 	}
 
-	public synchronized boolean legalMove(Command c , Player player) {
+	public synchronized boolean legalMove(Command c , Player player) throws IOException {
 		if (instance.commandIsValid(c)) {
-    	//commandisvalid makes the move too if its true
-//      Coordinate c1 = c.getCoord1();
-//      Coordinate c2 = c.getCoord2();
-//      Piece p1 = new Piece(c1);
-//      instance.setPieceAt(c2, p1);
-
-			currentPlayer = currentPlayer.opponent;
-			currentPlayer.sendBoard();
-			currentPlayer.sendCurrentPlayer();
+//    	commandisvalid makes the move and returns a boolean
+//			currentPlayer = currentPlayer.opponent;
+//			currentPlayer.sendBoard();
+//			currentPlayer.sendCurrentPlayer();
 			return true;
 		}
 		return false;
@@ -114,21 +86,21 @@ class Game {
     private ObjectOutputStream output;
     private String mark;
     private Player opponent;
-    String desiredGame;
+    private String desiredGame;
     
      /**
      * Constructs a handler thread, squirreling away the socket.
      * All the interesting work is done in the run method.
      */
-    public Player(Socket socket, String mark) {
+    public Player(Socket socket, String mark) throws IOException {
       this.socket = socket;
       this.mark = mark;
       try {
         input = new ObjectInputStream(socket.getInputStream());
         output = new ObjectOutputStream(socket.getOutputStream());
         getDesiredGame();
-      } catch (IOException e) {
-        System.out.println("DISCONNECT: Player could not connect or he died");
+      } catch (IOException | ClassNotFoundException e) {
+    	  System.out.println(e);
       }
     } 
     
@@ -143,64 +115,48 @@ class Game {
     	try {
     		if (mark.equals("X")) {
     			output.writeObject("You are first");
+    			output.flush();
     		} else {
     			output.writeObject("You are second");
+    			output.flush();
+
     		}
     	} catch(IOException e) {
     		e.printStackTrace();
     	}
-    	
     }
 
-    public void getDesiredGame() {
-    	try {
-    		desiredGame = (String) input.readObject();
-    	} catch (ClassNotFoundException | IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
+    public void getDesiredGame() throws ClassNotFoundException, IOException {
+		desiredGame = (String) input.readObject();
     }
+    
+    public void toDisappoint() throws IOException {
+    	output.writeObject("ERROR: Nobody wants to play with you. You will be disconnected.");
+		output.flush();
 
-    public void toDisappoint() {
-      try {
-        output.writeObject("Nobody wants to play with you. You will be disconnected.");
-      } catch (IOException e) {
-		// TODO Auto-generated catch block
-        e.printStackTrace();
-      } 
     }
 
     public void setOpponent(Player opponent) {
       this.opponent = opponent;
     }
 
-    public void sendBoard() {
-      try {
-    	  output.writeObject(instance.getBoard());
-    	  output.flush();
-      } catch (IOException e) {
-			// TODO Auto-generated catch block
-			 e.printStackTrace();
-		  }
+    public void sendBoard() throws IOException {
+	  output.writeObject(instance.getBoard());
+	  output.flush();
     }
     
-    public void sendCurrentPlayer() {
-        try {
-      	  output.writeObject(instance.getCurrentPlayer());
-      	  output.flush();
-        } catch (IOException e) {
-  			// TODO Auto-generated catch block
-  			 e.printStackTrace();
-        }
+    public void sendCurrentPlayer() throws IOException {
+  	  output.writeObject(instance.getCurrentPlayer());
+  	  output.flush();
     }
     
-    public void sendGameBoardGUI(){
-    	try{
-    		output.writeObject(instance.getGameBoardGUI());
-    		output.flush();
-    	} catch(IOException e){
-    		e.printStackTrace();
-    	}
+    public void sendGameBoardGUI() throws IOException{
+		output.writeObject(instance.getGameBoardGUI());
+		output.flush();
+    }
+    
+    public String getDesiredGameLocally(){
+    	return this.desiredGame;
     }
     
     public void run(){ //plays the game after being matched
@@ -212,33 +168,27 @@ class Game {
     		sendBoard();
     		sendCurrentPlayer();
     		sendGameBoardGUI();
-//    		while (true) {
-    			if(this.mark.equals(this.name)){
-    				Command comm = (Command)input.readObject();
+    		while (true) {
+				Command comm = (Command)input.readObject();
+
+    			if (legalMove(comm, this) ) {
+    				//talk to player who just played
+    				output.writeObject(instance.getBoard());
+    				output.flush();
+    				output.writeObject(instance.getCurrentPlayer());
+    				output.flush();
+    			} else {
+    				//send an error
+    				output.writeObject(instance.getBoard());
+    				output.flush();
+    				output.writeObject(instance.getCurrentPlayer());
+    				output.flush();
     			}
-
-//    			if (legalMove(comm, this) ) {
-//    				//talk to player who just played
-//    				output.writeObject(instance.getBoard());
-//    				output.flush();
-//    				output.writeObject(instance.getCurrentPlayer());
-//    				output.flush();
-//    				//how do set instance current player?
-//    				
-//    			} else {
-//    				//send an error
-//    				output.writeObject(instance.getBoard());
-//    				output.flush();
-//    				output.writeObject(instance.getCurrentPlayer());
-//    				output.flush();
-//    			}
-//    			if (instance.getGameStatus()==gameStatus.gameOver ) {
-//    				return;
-//    			}
-
-          
+    			if (instance.getGameStatus()==gameStatus.gameOver ) {
+    				return;
+    			}
           //TODO: how will server know the players decided to quit?
-//    		}
+    		}
     	} catch (IOException | ClassNotFoundException e){
     		e.printStackTrace();
     		
