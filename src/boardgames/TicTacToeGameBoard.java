@@ -183,4 +183,10 @@ public class TicTacToeGameBoard implements GameBoard{
 	public GameBoardGUI getGameBoardGUI(){
 		return ticTacToeGUI;
 	}
+
+	@Override
+	public void makeMove(Command c) {
+		// TODO Auto-generated method stub
+		
+	}
 }
