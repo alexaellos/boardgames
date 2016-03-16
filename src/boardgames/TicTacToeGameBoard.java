@@ -18,12 +18,24 @@ public class TicTacToeGameBoard implements GameBoard{
 	
 	private static GameBoardGUI ticTacToeGUI;
 	
+	public TicTacToeGameBoard() {
+		ticTacToeGUI = new GameBoardGUI("Tic Tac Toe", ROWS, COLS);
+	    for (int row = 0; row < ROWS; ++row) {
+	       for (int col = 0; col < COLS; ++col) {
+	          board[row][col] = new Piece(new Coordinate(row, col), "", null, "");
+	       }
+	    }
+	    gameStatus = boardgames.gameStatus.inProgress;
+	    currentPlayer = "X";
+	}
+	
 	public static void main(String[] args) {
 		playGame();
 	}
 	public static void playGame() {
 
-	      initGame();
+	      //initGame();
+	      printBoard();
 	      do {
 	         makeMove(currentPlayer);
 	         updateStatus(currentPlayer, currentRow, currentCol);
@@ -39,16 +51,6 @@ public class TicTacToeGameBoard implements GameBoard{
 	      } while (gameStatus == boardgames.gameStatus.inProgress);
 	}
 	
-	public static void initGame() {
-		ticTacToeGUI = new GameBoardGUI("Tic Tac Toe", ROWS, COLS);
-	    for (int row = 0; row < ROWS; ++row) {
-	       for (int col = 0; col < COLS; ++col) {
-	          board[row][col] = new Piece(new Coordinate(row, col), "", null, "");
-	       }
-	    }
-	    gameStatus = boardgames.gameStatus.inProgress;
-	    currentPlayer = "X";
-	}
 	
 	public static void makeMove(String currentTurn){
 		do {
@@ -63,14 +65,16 @@ public class TicTacToeGameBoard implements GameBoard{
 	         command = new Command(currentTurn, move);
 		}
 	    while(!commandValid(command));
+		currentRow = command.getCoord1().getX();
+        currentCol = command.getCoord1().getY();
+        board[currentRow][currentCol].setId(command.getPlayerId());
+        board[currentRow][currentCol].setImageLocation((currentPlayer == "X") ? "assets/X.GIF" : "assets/Y.GIF"); 
 	}
 	
 	public static boolean commandValid(Command c) {
-		if (c.getCoord1().getX() >= 0 && c.getCoord1().getX() < ROWS && c.getCoord1().getY() >= 0 && c.getCoord1().getY() < COLS && board[c.getCoord1().getX()][c.getCoord1().getY()].getId() == "") {
-            currentRow = c.getCoord1().getX();
-            currentCol = c.getCoord1().getY();
-            board[currentRow][currentCol].setId(c.getPlayerId());
-            board[currentRow][currentCol].setImageLocation((currentPlayer == "X") ? "assets/X.GIF" : "assets/Y.GIF"); 
+		if (c.getCoord1().getX() >= 0 && c.getCoord1().getX() < ROWS && 
+				c.getCoord1().getY() >= 0 && c.getCoord1().getY() < COLS && 
+				board[c.getCoord1().getX()][c.getCoord1().getY()].getId() == "") { 
             return true;
          } else {
         	 System.out.println("Invalid Move!");
