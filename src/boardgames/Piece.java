@@ -1,6 +1,10 @@
 package boardgames;
 
-public class Piece {
+import java.io.Serializable;
+
+public class Piece implements Serializable{
+	
+//	private static final long serialVersionUID = 5950169519310163575L;
 
 	private Coordinate coord;
 	private String id, playerId;

@@ -1,8 +1,9 @@
 package boardgames;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class GameBoardGUI {
+public class GameBoardGUI implements Serializable{
 
 	private String gameTitle;
 

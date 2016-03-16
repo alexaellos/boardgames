@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class Command implements Serializable{
 	
-	private static final long serialVersionUID = 5950169519310163575L;
+//	private static final long serialVersionUID = 5950169519310163575L;
 
 	private Coordinate coord1, coord2;
 	private String playerId;

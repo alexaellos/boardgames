@@ -1,12 +1,8 @@
 package boardgames;
 
-import java.io.BufferedReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import GUI.GUI;
 
@@ -30,7 +26,7 @@ public class client {
     private ObjectInputStream inObject;
     private ObjectOutputStream outObject;
     private String playerName;
-    private String gameTitle;
+    private Games gameTitle;
 
     /**
      * Constructs the client by connecting to a server
@@ -59,28 +55,29 @@ public class client {
      * will be sent a "QUIT" message also.
      */
     public void play() throws Exception {
-        String responseString;
-        Object responseObject;
         GUI gui = new GUI();
-        gameStatus isGameSelected = gui.startGUI();
-        System.out.println(isGameSelected);
+        gui.startGUI();
         gameTitle = gui.getSelectedGame();
         // 	Send SelectedGameTitle to server
-        outObject.writeObject(gameTitle);
+        outObject.writeObject(gameTitle.toString());
         outObject.flush();
-        // Receive whether I am player1 or player2
-        String whichPlayer = (String) inObject.readObject();     
-        playerName = gui.getPlayerName();
-        System.out.println(playerName);
-        //	Send Sever my name
-        outObject.writeObject(playerName);
-        outObject.flush();
-        
-        // Get the 2D Array from Server
-        Piece[][] board = (Piece[][]) inObject.readObject();
-        // Get Current Player from Server as String
-        String currentPlayer = (String) inObject.readObject(); 
         try {
+        	// If gotten here there is a connection with another player
+        	// Receive whether I am player1 or player2
+            String whichPlayer = (String) inObject.readObject();
+            playerName = gui.getPlayerName();
+            //	Send Sever my name
+            outObject.writeObject(playerName);
+            outObject.flush();
+            System.out.println(playerName);
+            // Get the 2D Array from Server
+            Piece[][] board = (Piece[][]) inObject.readObject();
+            // Get Current Player from Server as String
+            String currentPlayer = (String) inObject.readObject();
+            GameBoardGUI gameBoardGUI = (GameBoardGUI) inObject.readObject();
+            gui.loadGameBoardGUI(gameBoardGUI);
+            outObject.writeObject("aString");
+            outObject.flush();
             while (true) {
             	
             }
