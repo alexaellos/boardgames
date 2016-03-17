@@ -187,7 +187,7 @@ public class GUI implements ActionListener, GUIUpdater{
 				JButton gridButton = boardGrid[i][j];
 
 				String player = currentPiece.getPlayerId();
-				String actionCommandStr = "" + i + "," + j + ",";
+				String actionCommandStr = i + "," + j;
 
 				if(player.equals(player1Id)){
 					actionCommandStr += "1";
@@ -205,6 +205,7 @@ public class GUI implements ActionListener, GUIUpdater{
 
 	@Override
 	public String loadGameBoardGUI(GameBoardGUI gameGUI) {
+		currentFrame.setVisible(false);
 		JFrame boardGame = loadGameBoardFrame(gameGUI);
 		boardGame.setVisible(true);
 		return "";
@@ -214,6 +215,8 @@ public class GUI implements ActionListener, GUIUpdater{
 	public void actionPerformed(ActionEvent e) {
 		pressedButton = (JButton) e.getSource();
 
+		System.out.println("X: "+pressedButton.getActionCommand().charAt(0));
+		System.out.println("Y: "+pressedButton.getActionCommand().charAt(2));
 		// TIC TAC TOE GUI LOGIC
 		pressedButton.getText();
 	}

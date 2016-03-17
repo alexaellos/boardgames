@@ -52,7 +52,7 @@ public class client {
             String currentPlayer = getCurrentPlayer();
             GameBoardGUI gameBoardGUI = (GameBoardGUI) inObject.readObject();
             gui.loadGameBoardGUI(gameBoardGUI);
-            gui.updateGameBoardGUI(currentPlayer, board);
+            //gui.updateGameBoardGUI(currentPlayer, board);
             while (true) {
 //            	sendCommand();
             	board = getBoard();
